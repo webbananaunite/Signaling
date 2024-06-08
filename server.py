@@ -16,6 +16,7 @@ from collections import namedtuple
 from select import select
 import time
 import inspect
+import threading
 
 """
 Supported 3 NAT Type for Full Cone, Restrict NAT, Restrict Port NAT.
@@ -27,19 +28,13 @@ SymmetricNAT = "Symmetric NAT"  # 3
 UnknownNAT = "Unknown NAT" # 4
 NATTYPE = (FullCone, RestrictNAT, RestrictPortNAT, SymmetricNAT, UnknownNAT)
 
-# def log(*args):
-#     frame = inspect.currentframe().f_back
-#     print(frame.f_code.co_name, frame.f_lineno, time.asctime(), ' '.join([str(x) for x in args]))
-# def log(*args):
-#     # frame = inspect.currentframe().f_back
-#     print(' '.join([str(x) for x in args]))
 def log(*args):
     frame = inspect.currentframe().f_back
-    print(frame.f_lineno, ' '.join([str(x) for x in args]))
+    print(frame.f_lineno, time.asctime(), ' '.join([str(x) for x in args]))
 
 poolqueue = {}
-ClientInfo = namedtuple("ClientInfo", "addr, privateaddress, nat_type_id, conn")
-NodeStatus = namedtuple("NodeStatus", "addr, command, data, pool, active, privateaddress, privateip, privateport, nat_type_id, poollength, translateDictionary")
+ClientInfo = namedtuple("ClientInfo", "addr, privateaddress, node_performance, conn, metricTime")
+NodeStatus = namedtuple("NodeStatus", "addr, command, data, pool, active, privateaddress, privateip, privateport, node_performance, poollength, translateDictionary, metricTime")
 
 def main():
     port = sys.argv[1]
@@ -69,7 +64,7 @@ def main():
             conns.append(conn)
             log(conn)
             log(addr)
-            connsAddrs[conn] = NodeStatus(addr, None, None, None, None, None, None, None, None, None, None)
+            connsAddrs[conn] = NodeStatus(addr, None, None, None, None, None, None, None, None, None, None, None)
             log(connsAddrs)
         selectsocket(conns, connsAddrs)
     log("program end.")
@@ -101,8 +96,15 @@ def selectsocket(conns, connsAddrs):
                 ip, port = addr
                 sendBuff = "okyours {0}:{1}".format(ip, port)
                 log('^_^', sendBuff)
+
+                #save send okyours time
+                receivedTime = time.time()
+                connsAddrs[wSocket] = connsAddrs[wSocket]._replace(metricTime=receivedTime) #float
+
                 wSocket.sendto(sendBuff.encode(), addr)
-                log("pool={0}, nat_type={1}, ok sent to client".format(connsAddrs[wSocket].pool, NATTYPE[int(connsAddrs[wSocket].nat_type_id)]))
+                log(receivedTime)
+                # log("pool={0}, nat_type={1}, ok sent to client".format(connsAddrs[wSocket].pool, NATTYPE[int(connsAddrs[wSocket].node_performance)]))
+                log("pool={0}, nat_type={1}, ok sent to client".format(connsAddrs[wSocket].pool, connsAddrs[wSocket].node_performance))
             elif command == 'okregisterMe':
                 log("sent registerMeAck")
                 sendBuff = "registerMeAck"
@@ -110,31 +112,51 @@ def selectsocket(conns, connsAddrs):
                 wSocket.sendto(sendBuff.encode(), addr)
             elif command == 'translate':
                 log("Sent peer address pair to Claim Node.")
-                #connsAddrsを表示
-                
-
                 publicaddress = connsAddrs[wSocket].translateDictionary['publicaddress']
                 privateaddress = connsAddrs[wSocket].translateDictionary['privateaddress']
                 overlayNetworkAddress = connsAddrs[wSocket].translateDictionary['overlayNetworkAddress']
+                node_performance = connsAddrs[wSocket].translateDictionary['node_performance']
+
                 publicaddressForPeer = connsAddrs[wSocket].translateDictionary['publicaddressForPeer']
                 privateaddressForPeer = connsAddrs[wSocket].translateDictionary['privateaddressForPeer']
                 connForPeer = connsAddrs[wSocket].translateDictionary['connForPeer']
                 overlayNetworkAddressForPeer = connsAddrs[wSocket].translateDictionary['overlayNetworkAddressForPeer']
+                nodePerformanceForPeer = connsAddrs[wSocket].translateDictionary['nodePerformanceForPeer']
 
-                publicip, publicport = publicaddress
-                privateip, privateport = privateaddress
-                log(publicip, publicport, privateip, privateport, overlayNetworkAddress)
-                sendBuff = "translateAck {0} {1} {2} {3} {4}".format(publicip, publicport, privateip, privateport, overlayNetworkAddress)
-                log('^_^', sendBuff)
-                wSocket.sendto(sendBuff.encode(), addr)
+                log(connsAddrs[wSocket].translateDictionary['node_performance'])  #1.0017
+                log(connsAddrs[wSocket].translateDictionary['nodePerformanceForPeer'])   #1.001805
+                # metricTime = connsAddrs[wSocket].translateDictionary['metricTime']
+                # metricTimeForPeer = connsAddrs[wSocket].translateDictionary['metricTimeForPeer']
+                # timeDiff = metricTime - metricTimeForPeer
+                awaitTime = 0.3
+                # awaitTimeForPeer = 0
 
-                log("Sent peer address pair to Peer Node.")
-                publicip, publicport = publicaddressForPeer
-                privateip, privateport = privateaddressForPeer
-                log(publicip, publicport, privateip, privateport, overlayNetworkAddressForPeer)
-                sendBuffForPeer = "translateAck {0} {1} {2} {3} {4}".format(publicip, publicport, privateip, privateport, overlayNetworkAddressForPeer)
-                log('^_^', sendBuffForPeer)
-                connForPeer.sendto(sendBuffForPeer.encode(), publicaddress)
+                sync_event = threading.Event()
+                def event_the_node():
+                    publicip, publicport = publicaddress
+                    privateip, privateport = privateaddress
+                    log(publicip, publicport, privateip, privateport, overlayNetworkAddress)
+                    sendBuff = "translateAck {0} {1} {2} {3} {4} {5}".format(publicip, publicport, privateip, privateport, node_performance, overlayNetworkAddress)
+                    log('^_^', sendBuff)
+                    sync_event.wait()
+                    log(awaitTime)
+                    time.sleep(awaitTime) #seconds
+                    wSocket.sendto(sendBuff.encode(), addr)
+
+                def event_peer_node():
+                    log("Sent peer address pair to Peer Node.")
+                    publicip, publicport = publicaddressForPeer
+                    privateip, privateport = privateaddressForPeer
+                    log(publicip, publicport, privateip, privateport, overlayNetworkAddressForPeer)
+                    sendBuffForPeer = "translateAck {0} {1} {2} {3} {4} {5}".format(publicip, publicport, privateip, privateport, nodePerformanceForPeer, overlayNetworkAddressForPeer)
+                    log('^_^', sendBuffForPeer)
+                    connForPeer.sendto(sendBuffForPeer.encode(), publicaddress)
+                    sync_event.set()
+
+                thread_the_node = threading.Thread(target=event_the_node)
+                thread_peer_node = threading.Thread(target=event_peer_node)
+                thread_peer_node.start()
+                thread_the_node.start()
             else:
                 log("else command None")
             connsAddrs[wSocket] = connsAddrs[wSocket]._replace(command=None)
@@ -148,7 +170,7 @@ def poolqueueForPeer(addr):
 Receive Data, and attach any processes.
 """
 def receivedDataProcess(connsAddrs):
-    log(connsAddrs)
+    # log(connsAddrs)
     for key in connsAddrs:
       log(connsAddrs[key].active)
       if connsAddrs[key].active:
@@ -166,19 +188,20 @@ def receivedDataProcess(connsAddrs):
             log(data)
 
             #  data format:
-            #  {private ip} {private port} {nat type id} {address length} {overlayNetworkAddress}null
+            #  {private ip} {private port} {node performance} {address length} {overlayNetworkAddress}null
             #  ex.
-            #  '192.168.0.34 1402 0 128 8d3a6c0be806ba24b319f088a45504ea7d601970e0f820ca6965eeca1af2d8747d5bdf0ab68a30612004d54b88fe32a654fb7b300568acf8f3e8c6be439c20b9\x00'
+            #  '192.168.0.34 1402 12345.432 128 8d3a6c0be806ba24b319f088a45504ea7d601970e0f820ca6965eeca1af2d8747d5bdf0ab68a30612004d54b88fe32a654fb7b300568acf8f3e8c6be439c20b9\x00'
             # log("---")
             log(data.decode().strip())
-            command, privateip, privateport, nat_type_id, poollength, pool = data.decode().strip().split()
+            command, privateip, privateport, node_performance, poollength, pool = data.decode().strip().split()
             privateaddress = (privateip, privateport)
-            connsAddrs[key] = connsAddrs[key]._replace(command=command, privateip=privateip, privateport=privateport, nat_type_id=nat_type_id, poollength=poollength, pool=pool, privateaddress=privateaddress)
+            connsAddrs[key] = connsAddrs[key]._replace(command=command, privateip=privateip, privateport=privateport, node_performance=node_performance, poollength=poollength, pool=pool, privateaddress=privateaddress)
             log(connsAddrs[key].command)
             log(connsAddrs[key].privateaddress)
-            log(connsAddrs[key].nat_type_id)
+            log(connsAddrs[key].node_performance)
             log(connsAddrs[key].poollength)
             log(connsAddrs[key].pool)
+            log(connsAddrs[key].metricTime)
 
         elif data.startswith(b"okregisterMe"):
             log("received okregisterMe")
@@ -186,7 +209,14 @@ def receivedDataProcess(connsAddrs):
             connsAddrs[key] = connsAddrs[key]._replace(command="okregisterMe")
             log(connsAddrs[key].command)
             log("request received for pool:", connsAddrs[key].pool)
-            poolqueue[connsAddrs[key].pool] = ClientInfo(addr, connsAddrs[key].privateaddress, connsAddrs[key].nat_type_id, conn)
+            #take metric time since send okyours time
+            receivedTime = time.time()
+            metricTime = receivedTime - connsAddrs[key].metricTime
+            log(receivedTime)
+            log(connsAddrs[key].metricTime)
+            log(metricTime)
+            poolqueue[connsAddrs[key].pool] = ClientInfo(addr, connsAddrs[key].privateaddress, connsAddrs[key].node_performance, conn, metricTime)
+            # connsAddrs[key] = connsAddrs[key]._replace(metricTime=metricTime) #float
 
         elif data.startswith(b"translate "):
             log("received translate")
@@ -206,11 +236,16 @@ def receivedDataProcess(connsAddrs):
                 poolForPeer, overlayNetworkAddressForPeer = poolqueueForPeer(addr)
                 log(poolForPeer, overlayNetworkAddressForPeer)
                 translateDictionary['overlayNetworkAddress'] = pool
+                translateDictionary['metricTime'] = poolqueue[pool].metricTime
+                translateDictionary['node_performance'] = poolqueue[pool].node_performance
                 #to peer node
                 translateDictionary['publicaddressForPeer'] = poolForPeer.addr
                 translateDictionary['privateaddressForPeer'] = poolForPeer.privateaddress
                 translateDictionary['connForPeer'] = poolqueue[pool].conn
                 translateDictionary['overlayNetworkAddressForPeer'] = overlayNetworkAddressForPeer
+                translateDictionary['metricTimeForPeer'] = poolForPeer.metricTime
+                translateDictionary['nodePerformanceForPeer'] = poolForPeer.node_performance
+
                 log(translateDictionary)
                 connsAddrs[key] = connsAddrs[key]._replace(command=command, translateDictionary=translateDictionary)
                 log(connsAddrs)
