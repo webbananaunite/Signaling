@@ -111,9 +111,11 @@ def selectsocket(conns, connsAddrs):
                 log(sendBuff)
                 wSocket.sendto(sendBuff.encode(), addr)
             elif command == 'translate':
-                log("Sent peer address pair to Claim Node.")
+                log("Sent peer address pair to Claim Node.", connsAddrs[wSocket]) #now
                 publicaddress = connsAddrs[wSocket].translateDictionary['publicaddress']
                 privateaddress = connsAddrs[wSocket].translateDictionary['privateaddress']
+                claimNodeSocket = wSocket
+                claimNodeAddress = addr
                 overlayNetworkAddress = connsAddrs[wSocket].translateDictionary['overlayNetworkAddress']
                 node_performance = connsAddrs[wSocket].translateDictionary['node_performance']
 
@@ -132,16 +134,17 @@ def selectsocket(conns, connsAddrs):
                 # awaitTimeForPeer = 0
 
                 sync_event = threading.Event()
-                def event_the_node():
+                def event_claim_node():
                     publicip, publicport = publicaddress
                     privateip, privateport = privateaddress
                     log(publicip, publicport, privateip, privateport, overlayNetworkAddress)
                     sendBuff = "translateAck {0} {1} {2} {3} {4} {5}".format(publicip, publicport, privateip, privateport, node_performance, overlayNetworkAddress)
-                    log('^_^', sendBuff)
+                    log('^_^', sendBuff, 'to', claimNodeAddress)
                     sync_event.wait()
                     log(awaitTime)
                     time.sleep(awaitTime) #seconds
-                    wSocket.sendto(sendBuff.encode(), addr)
+                    # wSocket.sendto(sendBuff.encode(), addr)
+                    claimNodeSocket.sendto(sendBuff.encode(), claimNodeAddress)
 
                 def event_peer_node():
                     log("Sent peer address pair to Peer Node.")
@@ -149,11 +152,11 @@ def selectsocket(conns, connsAddrs):
                     privateip, privateport = privateaddressForPeer
                     log(publicip, publicport, privateip, privateport, overlayNetworkAddressForPeer)
                     sendBuffForPeer = "translateAck {0} {1} {2} {3} {4} {5}".format(publicip, publicport, privateip, privateport, nodePerformanceForPeer, overlayNetworkAddressForPeer)
-                    log('^_^', sendBuffForPeer)
+                    log('^_^', sendBuffForPeer, 'to', publicaddress)
                     connForPeer.sendto(sendBuffForPeer.encode(), publicaddress)
                     sync_event.set()
 
-                thread_the_node = threading.Thread(target=event_the_node)
+                thread_the_node = threading.Thread(target=event_claim_node)
                 thread_peer_node = threading.Thread(target=event_peer_node)
                 thread_peer_node.start()
                 thread_the_node.start()
