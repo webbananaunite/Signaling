@@ -130,7 +130,8 @@ def selectsocket(conns, connsAddrs):
                 # metricTime = connsAddrs[wSocket].translateDictionary['metricTime']
                 # metricTimeForPeer = connsAddrs[wSocket].translateDictionary['metricTimeForPeer']
                 # timeDiff = metricTime - metricTimeForPeer
-                awaitTime = 0.3
+                # awaitTime = 0.3
+                awaitTime = 0.0
                 # awaitTimeForPeer = 0
 
                 sync_event = threading.Event()
