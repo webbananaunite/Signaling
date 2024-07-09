@@ -79,10 +79,13 @@ def selectsocket(conns, connsAddrs):
     if r:
         log("r", len(r))
         for rSocket in r:
-            data = rSocket.recv(1024)
-            log("recv:", data)
-            connsAddrs[rSocket] = connsAddrs[rSocket]._replace(data=data)
-            connsAddrs[rSocket] = connsAddrs[rSocket]._replace(active=True)
+            try:
+                data = rSocket.recv(1024)
+                log("recv:", data)
+                connsAddrs[rSocket] = connsAddrs[rSocket]._replace(data=data)
+                connsAddrs[rSocket] = connsAddrs[rSocket]._replace(active=True)
+            except ConnectionResetError:
+                log("ConnectionResetError")
         receivedDataProcess(connsAddrs)
     if w:
         log("w", len(w))
