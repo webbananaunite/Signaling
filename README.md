@@ -1,64 +1,64 @@
 # BlockChain Library Suite
+[日本語](READMEjp.md)
 
-## blocks について
-blocks は中本智さんの論文に基づいて開発されたiOSライブラリです。
-あなたのアプリにブロックチェーンを導入できます。
+## about blocks
+blocks is a iOS library as introduce BlockChain System to your Apps, based on Satoshi Nakamoto's Paper,
+for various purpose (*** Exclude exchangeable digital currency in cryptocurrency exchange ***) iOS App.  
 
-いろんな目的に使用できますが、仮想通貨取引所で交換可能な暗号資産として使用することを禁止します。
+Characteristically, blocks is pre-contained Activities in Social System (Government, Public, Private Sectors) as Birth Registration, Residential Record, Guarantor.
 
-このブロックチェーン・ライブラリが特徴的なのは、政府・公共・民間の社会システムにおける活動をあらかじめ組み込まれていることです。（出生証明、住民票、身元保証など）
+It is depend on overlayNetwork library.
 
-添付の overlayNetwork ライブラリに依存します。
+## about overlayNetwork
+overlayNetwork is a iOS library as Peer-to-Peer Overlay Network Communicate System, based on Distributed Hash Table Lookup Protocol MIT Laboratory's Paper named Chord.  
 
-## overlayNetwork について
-overlayNetwork は、Peer-to-Peerオーバーレイ・ネットワーク通信システムです。
-MIT Laboratoryの分散ハッシュテーブルの実装である Chord 論文に基づいて開発されたものです。
+Nothing depending other libraries.
 
-他のライブラリに依存しません。
+## about Testy
+Testy is alternative to Basic Resident Register Card.  
 
-## Testy について
-Testy は住民基本台帳カードの代替として開発されています。
+It is made as Reference iOS App based on blocks and overlayNetwork libraries.
 
-blocksライブラリとoverlayNetworkライブラリの使用参考例として作成されたものです。
+## about Signaling
+Signaling coordinate Node to Node Communication (TCP/IP) in Overlay Network, with NAT Traverse,
+as Translate OverlayNetworkAddress to IP/Port.
 
-## Signaling について
-Signalingはオーバーレイネットワークにおいて、NATトラバースを用い、オーバーレイネットワークアドレスをIP/ポートに変換することで、ノード間の通信をコーディネートします。
-Signalingはクラウド上で動作し、ノードの要求に応じ、通信調整を行います。
-Signalingはオーバーレイネットワークにおいて、NAT越えを実現します。
+Signaling emit signal at claim by Nodes in Cloud (Python).
+
+Signaling make NAT Traverse in Overlay Network.
 
 ## download
-
-blocks - ブロックチェーン・ライブラリβ版  
-[ダウンロード](https://github.com/webbananaunite/blocks)  
+blocks - BlockChain Library α version  
+[download](https://github.com/webbananaunite/blocks)  
 https://github.com/webbananaunite/blocks  
  
-overlayNetwork - peer-to-peer分散ハッシュテーブル通信ライブラリβ版  
-[ダウンロード](https://github.com/webbananaunite/overlayNetwork)  
+overlayNetwork - Peer-to-Peer Overlay Network Communicate Library β version  
+[download](https://github.com/webbananaunite/overlayNetwork)  
 https://github.com/webbananaunite/overlayNetwork  
  
-Testy - 住民基本台帳アプリβ版  
-[ダウンロード](https://github.com/webbananaunite/Testy)  
+Testy - Basic Resident Register Application β version  
+[download](https://github.com/webbananaunite/Testy)  
 https://github.com/webbananaunite/Testy  
  
-Signaling - オーバーレイネットワークアドレスをIP/ポートに変換β版  
-[ダウンロード](https://github.com/webbananaunite/Signaling)  
+Signaling - Coordinater in Translate OverlayNetworkAddress to IP/Port β version  
+[download](https://github.com/webbananaunite/Signaling)  
 https://github.com/webbananaunite/Signaling  
 
-## ライブラリ利用方法
-### Swift Package (推奨)
-1) XcodeでTestyプロジェクトまたはあなたのアプリを開きます。  
+## How to Use
+### Swift Package (Recommended)
+1) Open Testy Project or Your App Project in Xcode.  
 2) File - Add Packages
-3) 右上のSearch or Enter Package URLに次のblocks URLを入力します。
+3) Input following blocks URL to Search or Enter Package URL Box on UpRight.
 https://github.com/webbananaunite/blocks
-4) blocks libraryのREADME.mdが表示されます。
-5) 右下のAdd Packageボタンをタップします。
-6) TestyプロジェクトまたはあなたのアプリのプロジェクトのFrameworks, Libraries and Embeded Contentにblocks libraryがあることを確認します。 
-7) TestyプロジェクトまたはあなたのアプリのプロジェクトのProject NavigatorのPackage Dependenciesにブロックチェーン・ライブラリ・スイート(blocks and overlayNetwork libraries)があることを確認します。
-8) 最初の一台は、ブートノードとして起動する必要があります。
-アプリをブートノードとして起動するためには、XcodeのEdit Scheme から RunAsBootNode という名称で Run Argument / Environment Variable のどちらかを設定します。
-9) Xcodeでビルド、デバイスやシミュレータへのインストールを行います。  
-10) アプリを起動し、"Join blocks Network"ボタンをタップします。  
-11) DHCテーブルの初期化が完了するまで8分ほど待ちます。  
+4) You see blocks library's README.md.
+5) Tap Add Package Button on DownRight.
+6) Make Sure there Added blocks library in Project - Frameworks, Libraries and Embeded Content.
+7) Make Sure there Added The BlockChain Library Suite(blocks and overlayNetwork libraries) at Package Dependencies in Project Navigator in Xcode.
+8) At First, a Simulator / Device must run as Boot Node.
+   For App run as Boot Node, Set {RunAsBootNode} as Run Argument / Environment Variable on Edit Scheme on Xcode.
+9) Xcode Build and Install Devices or Simulators.  
+10) Open App and Tap "Join blocks Network" Button.  
+11) Wait Around 8 min. up to Done Initialize DHC table.  
 ### Carthage
 - $ cd your project directory
 - $ echo 'github "webbananaunite/blocks" "carthage"' > Cartfile
@@ -76,59 +76,57 @@ end
 - $ pod install
 - Open your app.xcworkspace created by pod.
 
-## 制限事項
-ブートノードを公開アドレス上に作成できていないため、ベータ版を動作させるには、最初のNodeをブートノードとして起動する必要があります。
+## limitations
+NOT running Boot Node in Public Network yet in Beta Version. Cause First device must run as Boot Node. 
 
-## ライセンス
-blocks & overlayNetwork & Testy は MIT Licenseで公開されています。  
+## license
+blocks library & overlayNetwork library & Testy is published under MIT License,  
+as embedding your apps, any who can use any purpuse (*** Exclude exchangeable digital currency in cryptocurrency exchange ***). by free.
 
-無料で、あなたのアプリに組み込んで利用できます。  
-いろんな目的のアプリに組み込み可能ですが、仮想通貨取引所で交換可能な暗号資産として使用することを禁止します。
+## prohibited matter
+Use as exchangeable digital currency in cryptocurrency exchange is PROHIBITED.
 
-## 禁止事項
-仮想通貨取引所で交換可能な暗号資産として使用することを禁止します。
-
-## その他説明
-### 用語説明:
+## description
+### words:
 - Boot Node
 
-Overlay Network (blocks P2P Network)で最初のノードです。
+First Node in Overlay Network (blocks P2P Network).
 
 - Baby Sitter
 
-あるノードが、OSI参照モデルのセッションレイヤーとしてのオーバーレイネットワークに参加する際には、最初に Baby Sitter NodeをbindサーバーのTXTレコードから見つけ、FSコマンドを送信する必要があります。
-Codeプロトコルによる実装されるDHT（分散ハッシュテーブル）のエントリーごとにです。
+As A Node Joinning Overlay Network in OSI Session Layer, At First, Take Baby Sitter Node's IP and Port From TXT Record in bind Server.  
+Then Send FS Command to Baby Sitter Node for any Entry in Distributed Hush Table (Code Protocol).  
 
 - Taker
 
-OSI参照モデルのプレゼンテーションレイヤー／アプリケーションレイヤーとして振る舞うblocksブロックチェーンのネットワークに参加するために、まず最初に行うことは、出生証明書を申請することです。
-このネットワークには、管理者や管理ノードは存在しないため、Takerとなってくれるノードを見つける必要があります。
-AT (Ask For Taker) 要求をトランザクションとしてネットワークに流すためです。
+First of All, As Joinning blocks Block Chain Network in OSI Presentation/Application Layer, The Node Should Submit Application for Birth Registration to The Network.
+No There Administrator Node/Person In The Network, The Node Should Find Taker Node for Send AT (Ask For Taker) Claim as Publish Transaction.
 
 - Book
 
-blocksブロックチェーンが記述されたもの。
+What Wrote blocks Block Chain.
 
 - Booker
 
-Bookerとして振る舞うノードは、まだBookされていないトランザクションを収集し、プルーフオブワークによりノンスを計算し、ブロックをネットワークに流します。
-ノンス値が正確な場合、最初のノードがBookerとなり、一時的にブロックチェーン管理者として振舞います。次回のプルーフオブワークまでの期間です。
+The Booker Node Collect Non-Booked Transactions, Do Proof of Work as Calculate A Nonce, Publish Block.  
+As Firstest and Legitimate Nonce Value than Other Node, The Node be Booker.  
+The Booker Do Beheivier as Temporary Administrator of Book (blocks Block Chain) Up to Next Proof of Work.
 
-### 言語:  
+### language:  
 - SwiftUI (Protocol Oriented) 
 - C++ (Metal) 
 - objc (DNS resolv)
 - Python (Signaling)
 
-### サードパーティライブラリの使用
-使用していません。しかし、他の著作物を含んでいます。
+### using 3rd party libraries
+Nothing, but program include other one copyrights.  
 - QuadKey - Microsoft Corporation  
 - SHA-512 - Aaron D. Gifford
 
-### プログラミングアーキテクチャ  
+### programming architecture:  
 around DDD, Onion (Protocol Oriented)
 
-### バイトオーダー  
+### byteOrder:  
 - Distributed Hash Table (Finger table) address  
 Little Endian
 
@@ -136,24 +134,24 @@ Little Endian
 Little Endian
 
 ### cpu, gpu
-nonce の計算はcpuもしくはgpuを選択可能です。
+nonce calculator is choosable cpu or gpu.
 
-## ステータス
+## status
 Beta  
-Advanced Featuresを除く、すべての機能が実装されました。
+Have Implemented All Features but following Advanced Features.
 
-#### 未実装のAdvanced Features (20240709 13:33 JST Tokyo 現在)
-- Blockの圧縮、Light Node
-- Commandオペランドの圧縮
-- Birth Transaction、BasicIncome Transactionの重複チェックの高速化
-- イレギュラー発生時の手続き
-- ライブラリ利用ドキュメントの整備
-- Boot NodeをCloud (linux)に作成し稼働させる
+#### Un Implemented Advanced Features (as 20240709 13:33 JST Tokyo)
+- Complessed Block, Light Node
+- Complessed Command Operand
+- Be Hi-Speed Detect Duplicate Birth Transaction、BasicIncome Transaction
+- Procedure as for Occurred Irregular
+- Write Documents for Developer
+- Make and Boot up Boot Node on Cloud (linux)
 - Beta Test
 
 #### Join us!
-Peer-to-Peerオーバーレイ・ネットワークと、ブロックチェーンでの社会基盤構築に賛同していただける方、ボランティアになりますが、共に開発に貢献してくれる方やテストに参加してくれる方を募っています。  
+Interested in Building Social Infrastructure by Peer-to-Peer Overlay Network, Block-chain System, On volunteer, please join my Project.  
 
-ただし、仮想通貨取引所関係の方はお断りさせていただいておりますことをご了承ください。  
+but, Don't accept application from one related to Cryptocurrency Exchange.  
 
-ともに未来を作りましょう。ご連絡をお待ちしています。  
+Let's Make Our Future!  
