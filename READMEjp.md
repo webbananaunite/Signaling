@@ -90,6 +90,10 @@ blocks & overlayNetwork & Testy は MIT Licenseで公開されています。
 
 ## その他説明
 ### 用語説明:
+- Boot Node
+
+Overlay Network (blocks P2P Network)で最初のノードです。
+
 - Baby Sitter
 
 あるノードが、OSI参照モデルのセッションレイヤーとしてのオーバーレイネットワークに参加する際には、最初に Baby Sitter NodeをbindサーバーのTXTレコードから見つけ、FSコマンドを送信する必要があります。
@@ -136,16 +140,20 @@ nonce の計算はcpuもしくはgpuを選択可能です。
 
 ## ステータス
 Beta  
+Advanced Featuresを除く、すべての機能が実装されました。
 
-現在、すべての機能は実装されていません。
-- 例. overlayNetwork の DHT ネットワークから離脱したり、また戻ったりする場合への対応。  
+#### 未実装のAdvanced Features (20240709 13:33 JST Tokyo 現在)
+- Blockの圧縮、Light Node
+- Commandオペランドの圧縮
+- Birth Transaction、BasicIncome Transactionの重複チェックの高速化
+- イレギュラー発生時の手続き
+- ライブラリ利用ドキュメントの整備
+- Boot NodeをCloud (linux)に作成し稼働させる
+- Beta Test
 
-2024年5月に、すべての機能を実装した版をリリース予定です。  
-
+#### Join us!
 Peer-to-Peerオーバーレイ・ネットワークと、ブロックチェーンでの社会基盤構築に賛同していただける方、ボランティアになりますが、共に開発に貢献してくれる方やテストに参加してくれる方を募っています。  
 
 ただし、仮想通貨取引所関係の方はお断りさせていただいておりますことをご了承ください。  
 
-ご連絡をお待ちしています。  
-
-一緒に楽しみましょう！
+ともに未来を作りましょう。ご連絡をお待ちしています。  
