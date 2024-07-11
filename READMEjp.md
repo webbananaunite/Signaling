@@ -22,7 +22,7 @@ Testy は住民基本台帳カードの代替として開発されています�
 blocksライブラリとoverlayNetworkライブラリの使用参考例として作成されたものです。
 
 ## Signaling について
-Signalingはオーバーレイネットワークにおいて、NATトラバースを用い、オーバーレイネットワークアドレスをIP/ポートに変換することで、ノード間の通信をコーディネートします。
+Signalingはオーバーレイネットワークにおいて、NATトラバーサルを用い、オーバーレイネットワークアドレスをIP/ポートに変換することで、ノード間の通信をコーディネートします。
 Signalingはクラウド上で動作し、ノードの要求に応じ、通信調整を行います。
 Signalingはオーバーレイネットワークにおいて、NAT越えを実現します。
 
@@ -57,27 +57,28 @@ https://github.com/webbananaunite/blocks
 8) 最初の一台は、ブートノードとして起動する必要があります。
 アプリをブートノードとして起動するためには、XcodeのEdit Scheme から RunAsBootNode という名称で Run Argument / Environment Variable のどちらかを設定します。
 9) Xcodeでビルド、デバイスやシミュレータへのインストールを行います。  
-10) アプリを起動し、"Join blocks Network"ボタンをタップします。  
-11) DHCテーブルの初期化が完了するまで8分ほど待ちます。  
-### Carthage
+10) アプリを起動し、"Join blocks Network"ボタンをタップすることで、稼働中のSignaling Serverとの通信を開始します。
+11) DHCテーブルの初期化が完了するまで8分ほど待ちます。（初回起動時のみ）  
+### Carthage (0.3.0以降には対応していません。Swift Packageを使用してください。)
 - $ cd your project directory
 - $ echo 'github "webbananaunite/blocks" "carthage"' > Cartfile
 - $ carthage update --use-xcframeworks
-### CocoaPods
+### CocoaPods (0.3.0以降には対応していません。Swift Packageを使用してください。)
 - $ cd your project directory
 - $ pod init
 - $ vi Podfile
 ```
 target 'target name in your App proj' do
   use_frameworks!
-	pod 'blocks-blockchain'
+    pod 'blocks-blockchain'
 end
 ```
 - $ pod install
 - Open your app.xcworkspace created by pod.
 
 ## 制限事項
-ブートノードを公開アドレス上に作成できていないため、ベータ版を動作させるには、最初のNodeをブートノードとして起動する必要があります。
+ブートノードを公開アドレス上に作成できていないため、ベータ版を動作させるには、最初のNodeをブートノードとして起動する必要があります。  
+Signaling Serverはクラウド上において、運用実施中です。
 
 ## ライセンス
 blocks & overlayNetwork & Testy は MIT Licenseで公開されています。  
@@ -89,7 +90,7 @@ blocks & overlayNetwork & Testy は MIT Licenseで公開されています。
 仮想通貨取引所で交換可能な暗号資産として使用することを禁止します。
 
 ## その他説明
-### 用語説明:
+### Actors:
 - Boot Node
 
 Overlay Network (blocks P2P Network)で最初のノードです。
@@ -120,29 +121,29 @@ Bookerとして振る舞うノードは、まだBookされていないトラン�
 - objc (DNS resolv)
 - Python (Signaling)
 
-### サードパーティライブラリの使用
+### サードパーティライブラリの使用:
 使用していません。しかし、他の著作物を含んでいます。
 - QuadKey - Microsoft Corporation  
 - SHA-512 - Aaron D. Gifford
 
-### プログラミングアーキテクチャ  
+### プログラミングアーキテクチャ:  
 around DDD, Onion (Protocol Oriented)
 
-### バイトオーダー  
+### バイトオーダー:  
 - Distributed Hash Table (Finger table) address  
 Little Endian
 
 - nonce  
 Little Endian
 
-### cpu, gpu
+### cpu, gpu:
 nonce の計算はcpuもしくはgpuを選択可能です。
 
 ## ステータス
 Beta  
 Advanced Featuresを除く、すべての機能が実装されました。
 
-#### 未実装のAdvanced Features (20240709 13:33 JST Tokyo 現在)
+#### 未実装のAdvanced Features (20240709 13:33 JST Tokyo 現在):
 - Blockの圧縮、Light Node
 - Commandオペランドの圧縮
 - Birth Transaction、BasicIncome Transactionの重複チェックの高速化
@@ -150,8 +151,9 @@ Advanced Featuresを除く、すべての機能が実装されました。
 - ライブラリ利用ドキュメントの整備
 - Boot NodeをCloud (linux)に作成し稼働させる
 - Beta Test
+- 複数の Signaling Server の協調動作
 
-#### Join us!
+#### Join us!:
 Peer-to-Peerオーバーレイ・ネットワークと、ブロックチェーンでの社会基盤構築に賛同していただける方、ボランティアになりますが、共に開発に貢献してくれる方やテストに参加してくれる方を募っています。  
 
 ただし、仮想通貨取引所関係の方はお断りさせていただいておりますことをご了承ください。  
