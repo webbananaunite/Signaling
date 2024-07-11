@@ -57,13 +57,13 @@ https://github.com/webbananaunite/blocks
 8) At First, a Simulator / Device must run as Boot Node.
    For App run as Boot Node, Set {RunAsBootNode} as Run Argument / Environment Variable on Edit Scheme on Xcode.
 9) Xcode Build and Install Devices or Simulators.  
-10) Open App and Tap "Join blocks Network" Button.  
-11) Wait Around 8 min. up to Done Initialize DHC table.  
-### Carthage
+10) Open App and Tap "Join blocks Network" Button then Start Communication to Signaling Server on Cloud.  
+11) Wait Around 8 min. up to Done Initialize DHC table. (Initial Boot time Only)  
+### Carthage (*Not Available upper 0.3.0, Use Swift Package Instead)
 - $ cd your project directory
 - $ echo 'github "webbananaunite/blocks" "carthage"' > Cartfile
 - $ carthage update --use-xcframeworks
-### CocoaPods
+### CocoaPods (*Not Available upper 0.3.0, Use Swift Package Instead)
 - $ cd your project directory
 - $ pod init
 - $ vi Podfile
@@ -77,7 +77,8 @@ end
 - Open your app.xcworkspace created by pod.
 
 ## limitations
-NOT running Boot Node in Public Network yet in Beta Version. Cause First device must run as Boot Node. 
+NOT running Boot Node in Public Network yet in Beta Version. Cause First device must run as Boot Node.  
+Signaling Server is Working on Cloud.
 
 ## license
 blocks library & overlayNetwork library & Testy is published under MIT License,  
@@ -87,7 +88,7 @@ as embedding your apps, any who can use any purpuse (*** Exclude exchangeable di
 Use as exchangeable digital currency in cryptocurrency exchange is PROHIBITED.
 
 ## description
-### words:
+### Actors:
 - Boot Node
 
 First Node in Overlay Network (blocks P2P Network).
@@ -102,15 +103,17 @@ Then Send FS Command to Baby Sitter Node for any Entry in Distributed Hush Table
 First of All, As Joinning blocks Block Chain Network in OSI Presentation/Application Layer, The Node Should Submit Application for Birth Registration to The Network.
 No There Administrator Node/Person In The Network, The Node Should Find Taker Node for Send AT (Ask For Taker) Claim as Publish Transaction.
 
-- Book
-
-What Wrote blocks Block Chain.
-
 - Booker
 
 The Booker Node Collect Non-Booked Transactions, Do Proof of Work as Calculate A Nonce, Publish Block.  
 As Firstest and Legitimate Nonce Value than Other Node, The Node be Booker.  
 The Booker Do Beheivier as Temporary Administrator of Book (blocks Block Chain) Up to Next Proof of Work.
+
+### Things:
+- Book
+
+What Wrote blocks Block Chain.
+
 
 ### language:  
 - SwiftUI (Protocol Oriented) 
@@ -118,7 +121,7 @@ The Booker Do Beheivier as Temporary Administrator of Book (blocks Block Chain) 
 - objc (DNS resolv)
 - Python (Signaling)
 
-### using 3rd party libraries
+### using 3rd party libraries:
 Nothing, but program include other one copyrights.  
 - QuadKey - Microsoft Corporation  
 - SHA-512 - Aaron D. Gifford
@@ -133,14 +136,14 @@ Little Endian
 - nonce  
 Little Endian
 
-### cpu, gpu
+### cpu, gpu:
 nonce calculator is choosable cpu or gpu.
 
 ## status
 Beta  
 Have Implemented All Features but following Advanced Features.
 
-#### Un Implemented Advanced Features (as 20240709 13:33 JST Tokyo)
+#### Un Implemented Advanced Features (as 20240709 13:33 JST Tokyo):
 - Complessed Block, Light Node
 - Complessed Command Operand
 - Be Hi-Speed Detect Duplicate Birth Transaction、BasicIncome Transaction
@@ -148,8 +151,9 @@ Have Implemented All Features but following Advanced Features.
 - Write Documents for Developer
 - Make and Boot up Boot Node on Cloud (linux)
 - Beta Test
+- Multi Signaling Servers Orchestration Work 
 
-#### Join us!
+#### Join us!:
 Interested in Building Social Infrastructure by Peer-to-Peer Overlay Network, Block-chain System, On volunteer, please join my Project.  
 
 but, Don't accept application from one related to Cryptocurrency Exchange.  
