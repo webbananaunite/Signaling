@@ -1,6 +1,14 @@
 # BlockChain Library Suite
 [日本語](READMEjp.md)
 
+## Our Goals
+In Our Goaled Community, Use Blockchained Points issued by the SYSTEM(in other words Autonomous Intelligence) instead of Money issued by CentralBank/Fed./Gov./Co. (Coin/Bill/Credit/Debit/Prepaid).  
+
+Blockchained Points is for exchange Goods/Services.  
+
+Must NOT any Working for get the Points.  
+Get the Points every month on demand.  
+
 ## about blocks
 blocks is a iOS library as introduce BlockChain System to your Apps, based on Satoshi Nakamoto's Paper,
 for various purpose (*** Exclude exchangeable digital currency in cryptocurrency exchange ***) iOS App.  
