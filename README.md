@@ -126,15 +126,14 @@ https://github.com/webbananaunite/blocks
 ```
 target 'target name in your App proj' do
   use_frameworks!
-    pod 'blocks-blockchain'
+	pod 'blocks-blockchain'
 end
 ```
 - $ pod install
 - Open your app.xcworkspace created by pod.
 
 ## limitations
-NOT running Boot Node in Public Network yet in Beta Version. Cause First device must run as Boot Node.  
-Signaling Server is Working on Cloud.
+BootNode Running in Public Network is cheep environment cause Suddenly Stop BootNode as Shorting Memory.  
 
 ## license
 blocks library & overlayNetwork library & Testy is published under MIT License,  
@@ -200,7 +199,7 @@ nonce calculator is choosable cpu or gpu. iOS only
 Beta  
 Have Implemented All Features but following Advanced Features.
 
-#### Un Implemented Advanced Features (as 20240318 16:53 JST Tokyo):
+#### Un Implemented Advanced Features (as 20250318 16:53 JST Tokyo):
 - Complessed Block, Light Node
 - Complessed Command Operand
 - Be Hi-Speed Detect Duplicate Birth Transaction, BasicIncome Transaction
