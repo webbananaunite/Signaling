@@ -1,5 +1,17 @@
 # BlockChain Library Suite
 
+## 20250318までに完成した事
+Linuxプラットフォームへの対応が完了しました。ただし、ノンス計算には対応していません。  
+ソースコードはLinuxとiOSで共通です。(Swift Code)  
+動作させるにはSwift環境をインストールする必要があります。[download](https://www.swift.org/install/macos/)https://www.swift.org/install/macos/  
+
+ブートノードが公開ネットワークで動作し始めました。
+BlockChain LibraryはネームサーバーのTXTレコードからブートノードを見つけ出します。  
+ただし、インフラが貧弱なためブートノードはメモリ不足で停止する場合があります。  
+
+シグナリングサーバー（NAT横断のためのTCPホールパンチング）が公開ネットワーク上で動作しています。
+BlockChain LibraryはネームサーバーのTXTレコードからシグナリングサーバーを見つけ出します。  
+
 ## 私たちのゴール
 中央銀行／政府／企業が発行したお金（硬貨、紙幣、クレジット、デビッド、プリペイド）の代わりに、システム（言い換えれば、自律インテリジェンス）によって発行されるポイント*で生活する社会をめざします。  
 *ブロックチェーンで管理されるポイント  
@@ -9,8 +21,8 @@
 このポイントを得るために働く必要はありません。  
 要求に応じて、毎月ポイントが発行されます。  
 
-## blocks について
-blocks は中本智さんの論文に基づいて開発されたiOSライブラリです。
+## blocks 
+blocks は中本智さんの論文に基づいて開発されたiOS/Linuxライブラリです。
 あなたのアプリにブロックチェーンを導入できます。
 
 いろんな目的に使用できますが、仮想通貨取引所で交換可能な暗号資産として使用することを禁止します。
@@ -19,41 +31,86 @@ blocks は中本智さんの論文に基づいて開発されたiOSライブラ�
 
 添付の overlayNetwork ライブラリに依存します。
 
-## overlayNetwork について
+## overlayNetwork 
 overlayNetwork は、Peer-to-Peerオーバーレイ・ネットワーク通信システムです。
 MIT Laboratoryの分散ハッシュテーブルの実装である Chord 論文に基づいて開発されたものです。
 
+NAT越え（TCPホールパンチング）により他のノードと通信します。  
+
+POSIX select() システムコールにより多重化通信を実現しています。(Swift Code)  
+
 他のライブラリに依存しません。
 
-## Testy について
+## Testy 
 Testy は住民基本台帳カードの代替として開発されています。
 
-blocksライブラリとoverlayNetworkライブラリの使用参考例として作成されたものです。
+blocksライブラリとoverlayNetworkライブラリの使用参考例として作成されたiOS/Linuxアプリです。
 
-## Signaling について
-Signalingはオーバーレイネットワークにおいて、NATトラバーサルを用い、オーバーレイネットワークアドレスをIP/ポートに変換することで、ノード間の通信をコーディネートします。
-Signalingはクラウド上で動作し、ノードの要求に応じ、通信調整を行います。
-Signalingはオーバーレイネットワークにおいて、NAT越えを実現します。
+## Signaling 
+Signalingはオーバーレイネットワークにおいて、NATトラバーサルを用い、オーバーレイネットワークアドレスをIP/ポートに変換することで、ノード間の通信をコーディネートします。  
+
+Signalingはクラウド上で動作し、ノードの要求に応じ、通信調整を行います。  
+
+Signalingはオーバーレイネットワークにおいて、NAT越え（TCPホールパンチング）により他のノードと通信します。  
+
+POSIX select() システムコールにより多重化通信を実現しています。(Swift Code)  
 
 ## download
 
-blocks - ブロックチェーン・ライブラリβ版  
+blocks - ブロックチェーン・ライブラリ  
 [ダウンロード](https://github.com/webbananaunite/blocks)  
 https://github.com/webbananaunite/blocks  
  
-overlayNetwork - peer-to-peer分散ハッシュテーブル通信ライブラリβ版  
+overlayNetwork - peer-to-peer分散ハッシュテーブル通信ライブラリ　NAT越え（TCPホールパンチング）  
 [ダウンロード](https://github.com/webbananaunite/overlayNetwork)  
 https://github.com/webbananaunite/overlayNetwork  
  
-Testy - 住民基本台帳アプリβ版  
+Testy - 住民基本台帳アプリ  
 [ダウンロード](https://github.com/webbananaunite/Testy)  
 https://github.com/webbananaunite/Testy  
  
-Signaling - オーバーレイネットワークアドレスをIP/ポートに変換β版  
+Signaling - オーバーレイネットワークアドレスをIP/ポートに変換　NAT越え（TCPホールパンチング）  
 [ダウンロード](https://github.com/webbananaunite/Signaling)  
 https://github.com/webbananaunite/Signaling  
 
-## ライブラリ利用方法
+## Linuxアプリとしてのビルド方法　ー　Swift Linux Static Libraryを用いてmacOS上でのクロスコンパイル
+0) Linux用プロジェクトを開くには、Testy/Package.swiftをXcodeで開きます。Testy/Testy.xcodeprojではなく。  
+1) Swiftコンパイラーをダウンロード、インストール [download](https://www.swift.org/install/macos/)https://www.swift.org/install/macos/.  
+  ex. swift-6.0.3-RELEASE-osx.pkg  
+2) TOOLCHAINS環境変数に定義するためのツールチェーン定義を抽出  
+```
+$ plutil -extract CFBundleIdentifier raw /Library/Developer/Toolchains/swift-6.0.3-RELEASE.xctoolchain/Info.plist 
+org.swift.603202412101a
+```
+3) Static Linux SDK for Swiftをインストール cf. [https://www.swift.org/documentation/articles/static-linux-getting-started.html](https://www.swift.org/documentation/articles/static-linux-getting-started.html)  
+```
+$ TOOLCHAINS=org.swift.603202412101a swift sdk install ~/Downloads/swift-6.0.3-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz
+```
+4) Linuxアプリとしてクロスコンパイル  
+```
+$ cd ~/Documents/block\ chain/Testy
+$ TOOLCHAINS=org.swift.603202412101a swift build -v --swift-sdk x86_64-swift-linux-musl --build-path ~/appOutput/Testy
+```
+5) 実行ファイルをLinuxにコピー  
+```
+ex.
+$ scp -i {your key file} ~/appOutput/Testy/x86_64-swift-linux-musl/debug/TestyOnLinux {target user}@{target host name}:{target path}
+```
+6) Linux Distributionごとにターゲット環境を構築  
+[download](https://www.swift.org/install/linux/#platforms)https://www.swift.org/install/linux/#platforms  
+```
+ex.
+$ wget https://download.swift.org/swift-6.0.3-release/ubi9/swift-6.0.3-RELEASE/swift-6.0.3-RELEASE-ubi9.tar.gz
+$ tar -xzf swift-6.0.3-RELEASE-ubi9.tar.gz
+$ vi .bashrc
+export PATH=~/swift-6.0.3-RELEASE-ubi9/usr/bin:"${PATH}"
+```
+7) Run App on shell.
+```
+$ lldb TestyLinux
+```
+
+## XcodeでiOSアプリとしてビルドする方法
 ### Swift Package (推奨)
 1) XcodeでTestyプロジェクトまたはあなたのアプリを開きます。  
 2) File - Add Packages
@@ -63,11 +120,9 @@ https://github.com/webbananaunite/blocks
 5) 右下のAdd Packageボタンをタップします。
 6) TestyプロジェクトまたはあなたのアプリのプロジェクトのFrameworks, Libraries and Embeded Contentにblocks libraryがあることを確認します。 
 7) TestyプロジェクトまたはあなたのアプリのプロジェクトのProject NavigatorのPackage Dependenciesにブロックチェーン・ライブラリ・スイート(blocks and overlayNetwork libraries)があることを確認します。
-8) 最初の一台は、ブートノードとして起動する必要があります。
-アプリをブートノードとして起動するためには、XcodeのEdit Scheme から RunAsBootNode という名称で Run Argument / Environment Variable のどちらかを設定します。
-9) Xcodeでビルド、デバイスやシミュレータへのインストールを行います。  
-10) アプリを起動し、"Join blocks Network"ボタンをタップすることで、稼働中のSignaling Serverとの通信を開始します。
-11) DHCテーブルの初期化が完了するまで8分ほど待ちます。（初回起動時のみ）  
+8) Xcodeでビルド、デバイスやシミュレータへのインストールを行います。  
+9) アプリを起動し、"Join blocks Network"ボタンをタップすることで、稼働中のSignaling Serverとの通信を開始します。
+10) OverlayNetwork Fingerテーブルの初期化が完了するまで5分ほど待ちます。（初回起動時のみ）  
 ### Carthage (0.3.0以降には対応していません。Swift Packageを使用してください。)
 - $ cd your project directory
 - $ echo 'github "webbananaunite/blocks" "carthage"' > Cartfile
@@ -127,9 +182,10 @@ blocksブロックチェーンが記述されたもの。
 
 
 ### 言語:  
-- SwiftUI (Protocol Oriented) 
-- C++ (Metal) 
-- objc (DNS resolv)
+- Swift (Protocol Oriented)
+- SwiftUI iOSのみ
+- C++ (Metal) iOSのみ
+- objc (DNS resolv) iOSのみ
 - Python (Signaling)
 
 ### サードパーティライブラリの使用:
@@ -138,7 +194,7 @@ blocksブロックチェーンが記述されたもの。
 - SHA-512 - Aaron D. Gifford
 
 ### プログラミングアーキテクチャ:  
-around DDD, Onion (Protocol Oriented)
+DDD, Onion Architecture (Protocol Oriented)
 
 ### バイトオーダー:  
 - Distributed Hash Table (Finger table) address  
@@ -148,25 +204,17 @@ Little Endian
 Little Endian
 
 ### cpu, gpu:
-nonce の計算はcpuもしくはgpuを選択可能です。
+nonce の計算はcpuもしくはgpuを選択可能です。iOSのみ
 
 ## ステータス
 Beta  
 Advanced Featuresを除く、すべての機能が実装されました。
 
-#### 未実装のAdvanced Features (20240709 13:33 JST Tokyo 現在):
+#### 未実装のAdvanced Features (20250318 16:53 JST Tokyo 現在):
 - Blockの圧縮、Light Node
 - Commandオペランドの圧縮
-- Birth Transaction、BasicIncome Transactionの重複チェックの高速化
+- Birth Transaction, BasicIncome Transactionの重複チェックの高速化
 - イレギュラー発生時の手続き
 - ライブラリ利用ドキュメントの整備
-- Boot NodeをCloud (linux)に作成し稼働させる
 - Beta Test
 - 複数の Signaling Server の協調動作
-
-#### Join us!:
-Peer-to-Peerオーバーレイ・ネットワークと、ブロックチェーンでの社会基盤構築に賛同していただける方、ボランティアになりますが、共に開発に貢献してくれる方やテストに参加してくれる方を募っています。  
-
-ただし、仮想通貨取引所関係の方はお断りさせていただいておりますことをご了承ください。  
-
-ともに未来を作りましょう。ご連絡をお待ちしています。  
