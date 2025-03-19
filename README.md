@@ -1,6 +1,13 @@
 # BlockChain Library Suite
 [日本語](READMEjp.md)
 
+## All We Did up to 20250318
+All Done applied on Linux Platform except Calculate Nonce as same Code as iOS/iPadOS. Should be install Swift Compiler to Linux [download](https://www.swift.org/install/macos/)https://www.swift.org/install/macos/.  
+
+Running BootNode in Public Network. (Library will find out TXT Records on Name Server.) But it is cheep environment cause Suddenly Stop BootNode as Shorting Memory.  
+
+Signaling Server is Working in Public Network. (Library will find out TXT Records on Name Server.)  
+
 ## Our Goals
 In Our Goaled Community, Use Blockchained Points issued by the SYSTEM(in other words Autonomous Intelligence) instead of Money issued by CentralBank/Fed./Gov./Co. (Coin/Bill/Credit/Debit/Prepaid).  
 
@@ -9,50 +16,93 @@ Blockchained Points is for exchange Goods/Services.
 Must NOT any Working for get the Points.  
 Get the Points every month on demand.  
 
-## about blocks
-blocks is a iOS library as introduce BlockChain System to your Apps, based on Satoshi Nakamoto's Paper,
-for various purpose (*** Exclude exchangeable digital currency in cryptocurrency exchange ***) iOS App.  
+## blocks
+blocks is a iOS/Linux library as introduce BlockChain System to your Apps, based on Satoshi Nakamoto's Paper,  
+for various purpose (*** Exclude exchangeable digital currency in cryptocurrency exchange ***) iOS App/Linux App.  
 
 Characteristically, blocks is pre-contained Activities in Social System (Government, Public, Private Sectors) as Birth Registration, Residential Record, Guarantor.
 
 It is depend on overlayNetwork library.
 
-## about overlayNetwork
-overlayNetwork is a iOS library as Peer-to-Peer Overlay Network Communicate System, based on Distributed Hash Table Lookup Protocol MIT Laboratory's Paper named Chord.  
+## overlayNetwork
+overlayNetwork is a iOS/Linux library as Peer-to-Peer Overlay Network Communicate System, based on Distributed Hash Table Lookup Protocol MIT Laboratory's Paper named Chord.  
 
-Nothing depending other libraries.
+Do Communicate Other Node with NAT Traverse (TCP Hole punching).  
 
-## about Testy
-Testy is alternative to Basic Resident Register Card.  
+Work with POSIX select() system call as Multiplexing Communication in Swift Code.  
 
-It is made as Reference iOS App based on blocks and overlayNetwork libraries.
+Nothing depending other libraries.  
 
-## about Signaling
+## Testy
+Testy is alternative to Basic Resident Register Card. (Work on iOS/Linux)  
+
+It is made as Reference iOS App/Linux App based on blocks and overlayNetwork libraries.
+
+## Signaling
 Signaling coordinate Node to Node Communication (TCP/IP) in Overlay Network, with NAT Traverse,
 as Translate OverlayNetworkAddress to IP/Port.
 
-Signaling emit signal at claim by Nodes in Cloud (Python).
+Signaling emit signal at claim by Nodes in Cloud (Python Code).
 
-Signaling make NAT Traverse in Overlay Network.
+Signaling make NAT Traverse (TCP Hole punching) in Overlay Network.  
+
+Work with POSIX select() system call as Multiplexing Communication in Python Code.  
 
 ## download
-blocks - BlockChain Library α version  
+blocks - BlockChain Library  
 [download](https://github.com/webbananaunite/blocks)  
 https://github.com/webbananaunite/blocks  
  
-overlayNetwork - Peer-to-Peer Overlay Network Communicate Library β version  
+overlayNetwork - Peer-to-Peer Overlay Network Communicate Library NAT Traverse (TCP Hole punching)  
 [download](https://github.com/webbananaunite/overlayNetwork)  
 https://github.com/webbananaunite/overlayNetwork  
  
-Testy - Basic Resident Register Application β version  
+Testy - Basic Resident Register Application  
 [download](https://github.com/webbananaunite/Testy)  
 https://github.com/webbananaunite/Testy  
  
-Signaling - Coordinater in Translate OverlayNetworkAddress to IP/Port β version  
+Signaling - Coordinater in Translate OverlayNetworkAddress to IP/Port NAT Traverse (TCP Hole punching)  
 [download](https://github.com/webbananaunite/Signaling)  
 https://github.com/webbananaunite/Signaling  
 
-## How to Use
+## How to Build Linux Apps with Closs-Compile on macOS as using Swift Linux Static Library
+0) To Open Project for Linux App, Open Testy/Package.swift in Xcode instead Testy/Testy.xcodeproj.  
+1) Download and Install Swift Compiler [download](https://www.swift.org/install/macos/)https://www.swift.org/install/macos/.  
+  ex. swift-6.0.3-RELEASE-osx.pkg  
+2) Extract toolchain spcifier for define TOOLCHAINS environment variable.  
+```
+$ plutil -extract CFBundleIdentifier raw /Library/Developer/Toolchains/swift-6.0.3-RELEASE.xctoolchain/Info.plist 
+org.swift.603202412101a
+```
+3) Install Static Linux SDK for Swift cf. [https://www.swift.org/documentation/articles/static-linux-getting-started.html](https://www.swift.org/documentation/articles/static-linux-getting-started.html)  
+```
+$ TOOLCHAINS=org.swift.603202412101a swift sdk install ~/Downloads/swift-6.0.3-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz
+```
+4) Closs-Compile for Linux App  
+```
+$ cd ~/Documents/block\ chain/Testy
+$ TOOLCHAINS=org.swift.603202412101a swift build -v --swift-sdk x86_64-swift-linux-musl --build-path ~/appOutput/Testy
+```
+5) Copy binary to Target Linux.  
+```
+ex.
+$ scp -i {your key file} ~/appOutput/Testy/x86_64-swift-linux-musl/debug/TestyOnLinux {target user}@{target host name}:{target path}
+```
+6) Set Target Run Environment on by Linux Distribution  
+[download](https://www.swift.org/install/linux/#platforms)https://www.swift.org/install/linux/#platforms  
+```
+ex.
+$ wget https://download.swift.org/swift-6.0.3-release/ubi9/swift-6.0.3-RELEASE/swift-6.0.3-RELEASE-ubi9.tar.gz
+$ tar -xzf swift-6.0.3-RELEASE-ubi9.tar.gz
+$ vi .bashrc
+export PATH=~/swift-6.0.3-RELEASE-ubi9/usr/bin:"${PATH}"
+```
+7) Run App on shell.
+```
+$ lldb TestyLinux
+```
+
+## How to Build with Xcode on iPhone/iPad
 ### Swift Package (Recommended)
 1) Open Testy Project or Your App Project in Xcode.  
 2) File - Add Packages
@@ -62,11 +112,9 @@ https://github.com/webbananaunite/blocks
 5) Tap Add Package Button on DownRight.
 6) Make Sure there Added blocks library in Project - Frameworks, Libraries and Embeded Content.
 7) Make Sure there Added The BlockChain Library Suite(blocks and overlayNetwork libraries) at Package Dependencies in Project Navigator in Xcode.
-8) At First, a Simulator / Device must run as Boot Node.
-   For App run as Boot Node, Set {RunAsBootNode} as Run Argument / Environment Variable on Edit Scheme on Xcode.
-9) Xcode Build and Install Devices or Simulators.  
-10) Open App and Tap "Join blocks Network" Button then Start Communication to Signaling Server on Cloud.  
-11) Wait Around 8 min. up to Done Initialize DHC table. (Initial Boot time Only)  
+8) Xcode Build and Install Devices or Simulators.  
+9) Open App and Tap "Join blocks Network" Button then Start Communication to Signaling Server on Cloud.  
+10) Wait Around 5 min. up to Done Initialize OverlayNetwork Finger table. (Initial Boot time Only)  
 ### Carthage (*Not Available upper 0.3.0, Use Swift Package Instead)
 - $ cd your project directory
 - $ echo 'github "webbananaunite/blocks" "carthage"' > Cartfile
@@ -78,7 +126,7 @@ https://github.com/webbananaunite/blocks
 ```
 target 'target name in your App proj' do
   use_frameworks!
-	pod 'blocks-blockchain'
+    pod 'blocks-blockchain'
 end
 ```
 - $ pod install
@@ -124,9 +172,10 @@ What Wrote blocks Block Chain.
 
 
 ### language:  
-- SwiftUI (Protocol Oriented) 
-- C++ (Metal) 
-- objc (DNS resolv)
+- Swift (Protocol Oriented)
+- SwiftUI iOS only
+- C++ (Metal) iOS only
+- objc (DNS resolv) iOS only
 - Python (Signaling)
 
 ### using 3rd party libraries:
@@ -135,7 +184,7 @@ Nothing, but program include other one copyrights.
 - SHA-512 - Aaron D. Gifford
 
 ### programming architecture:  
-around DDD, Onion (Protocol Oriented)
+DDD, Onion Architecture (Protocol Oriented)
 
 ### byteOrder:  
 - Distributed Hash Table (Finger table) address  
@@ -145,25 +194,17 @@ Little Endian
 Little Endian
 
 ### cpu, gpu:
-nonce calculator is choosable cpu or gpu.
+nonce calculator is choosable cpu or gpu. iOS only
 
 ## status
 Beta  
 Have Implemented All Features but following Advanced Features.
 
-#### Un Implemented Advanced Features (as 20240709 13:33 JST Tokyo):
+#### Un Implemented Advanced Features (as 20240318 16:53 JST Tokyo):
 - Complessed Block, Light Node
 - Complessed Command Operand
-- Be Hi-Speed Detect Duplicate Birth Transaction、BasicIncome Transaction
+- Be Hi-Speed Detect Duplicate Birth Transaction, BasicIncome Transaction
 - Procedure as for Occurred Irregular
 - Write Documents for Developer
-- Make and Boot up Boot Node on Cloud (linux)
 - Beta Test
 - Multi Signaling Servers Orchestration Work 
-
-#### Join us!:
-Interested in Building Social Infrastructure by Peer-to-Peer Overlay Network, Block-chain System, On volunteer, please join my Project.  
-
-but, Don't accept application from one related to Cryptocurrency Exchange.  
-
-Let's Make Our Future!  
