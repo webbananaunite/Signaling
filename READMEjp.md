@@ -141,8 +141,7 @@ end
 - Open your app.xcworkspace created by pod.
 
 ## 制限事項
-ブートノードを公開アドレス上に作成できていないため、ベータ版を動作させるには、最初のNodeをブートノードとして起動する必要があります。  
-Signaling Serverはクラウド上において、運用実施中です。
+現在、公開アドレス上に公開されているブートノード(Boot Node)はインフラが貧弱なためブートノードはメモリ不足で停止する場合があります。  
 
 ## ライセンス
 blocks & overlayNetwork & Testy は MIT Licenseで公開されています。  
