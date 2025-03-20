@@ -3,7 +3,7 @@
 ## 20250318までに完成した事
 Linuxプラットフォームへの対応が完了しました。ただし、ノンス計算には対応していません。  
 ソースコードはLinuxとiOSで共通です。(Swift Code)  
-動作させるにはSwift環境をインストールする必要があります。[download](https://www.swift.org/install/macos/)https://www.swift.org/install/macos/  
+動作させるにはSwift環境をインストールする必要があります。[download](https://www.swift.org/install/linux/#platforms)https://www.swift.org/install/linux/#platforms  
 
 ブートノードが公開ネットワークで動作し始めました。
 BlockChain LibraryはネームサーバーのTXTレコードからブートノードを見つけ出します。  
@@ -134,7 +134,7 @@ https://github.com/webbananaunite/blocks
 ```
 target 'target name in your App proj' do
   use_frameworks!
-	pod 'blocks-blockchain'
+    pod 'blocks-blockchain'
 end
 ```
 - $ pod install
