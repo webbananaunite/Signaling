@@ -19,16 +19,52 @@ import inspect
 import threading
 
 """
+Signaling
+
+・Support NAT Types
 Supported 3 NAT Type for Full Cone, Restrict NAT, Restrict Port NAT.
+
+・Using words
+private == local == internal
+public == global == external
+peer == source/destination
+full cone == topology to which any function mappable. == perfect cone
+
+・NAT Translation (Mapping) Table in Router(gateway) Examples
+Full Cone (Not should be TCP Hole punching. Only know mapped public address.)
+| private address | mapped public address | peer restriction |
+| 192.168.0.2:1400 | 158.92.830.2:5001 | any ip in several minutes |
+| 192.168.0.3:2800 | 158.92.830.2:5002 | any ip in several minutes |
+
+Restrict NAT (Should be TCP Hole punching.)
+| private address | mapped public address | peer restriction |
+| 192.168.0.2:1400 | 158.92.830.2:5001 | only 16.8.23.78 in several minutes |
+| 192.168.0.3:2800 | 158.92.830.2:5002 | only 200.120.23.102 in several minutes |
+
+Restrict Port NAT (Should be TCP Hole punching.)
+| private address | mapped public address | peer restriction |
+| 192.168.0.2:1400 | 158.92.830.2:5001 | only 16.8.23.78:1490 in several minutes |
+| 192.168.0.3:2800 | 158.92.830.2:5002 | only 200.120.23.102:538 in several minutes |
+
+Symmetric NAT (Can NOT be TCP Hole punching. Almost NOT Used.)
+| private address | mapped public address | peer restriction |
+| 192.168.0.2:1400 | 158.92.830.2:1400 | only 16.8.23.78 |
+| 192.168.0.3:2800 | 158.92.830.3:2800 | only 200.120.23.102 |
+
+* aboved ip address and port number is just example.
 """
-FullCone = "Full Cone"  # 0
-RestrictNAT = "Restrict NAT"  # 1
-RestrictPortNAT = "Restrict Port NAT"  # 2
-SymmetricNAT = "Symmetric NAT"  # 3
+FullCone = "Full Cone"  # 0                 Receivable packets from any source ip restricted the desctination ip's device in LAN devices
+RestrictNAT = "Restrict NAT"  # 1           Receivable packet from the source ip restricted the destination ip's device in LAN devices
+RestrictPortNAT = "Restrict Port NAT"  # 2  Receivable packet from the source ip+port restricted the destination ip+port's device in LAN devices
+SymmetricNAT = "Symmetric NAT"  # 3         Receivable packet restricted from source ip+port to the LAN device
 UnknownNAT = "Unknown NAT" # 4
 NATTYPE = (FullCone, RestrictNAT, RestrictPortNAT, SymmetricNAT, UnknownNAT)
 
 def log(*args):
+    #frame = inspect.currentframe().f_back
+    #print(frame.f_lineno, time.asctime(), ' '.join([str(x) for x in args]))
+    return
+def logEssential(*args):
     frame = inspect.currentframe().f_back
     print(frame.f_lineno, time.asctime(), ' '.join([str(x) for x in args]))
 
@@ -114,22 +150,42 @@ def selectsocket(conns, connsAddrs):
                 log(sendBuff)
                 wSocket.sendto(sendBuff.encode(), addr)
             elif command == 'translate':
-                log("Sent peer address pair to Claim Node.", connsAddrs[wSocket]) #now
-                publicaddress = connsAddrs[wSocket].translateDictionary['publicaddress']
-                privateaddress = connsAddrs[wSocket].translateDictionary['privateaddress']
-                claimNodeSocket = wSocket
-                claimNodeAddress = addr
-                overlayNetworkAddress = connsAddrs[wSocket].translateDictionary['overlayNetworkAddress']
-                node_performance = connsAddrs[wSocket].translateDictionary['node_performance']
+                log("Sent peer address pair to Claim Node.", connsAddrs[wSocket])
+                try:
+                    publicaddress = connsAddrs[wSocket].translateDictionary['publicaddress']
+                    privateaddress = connsAddrs[wSocket].translateDictionary['privateaddress']
+                    claimNodeSocket = wSocket
+                    claimNodeAddress = addr
+                    overlayNetworkAddress = connsAddrs[wSocket].translateDictionary['overlayNetworkAddress']
+                    token = connsAddrs[wSocket].translateDictionary['token']
 
-                publicaddressForPeer = connsAddrs[wSocket].translateDictionary['publicaddressForPeer']
-                privateaddressForPeer = connsAddrs[wSocket].translateDictionary['privateaddressForPeer']
-                connForPeer = connsAddrs[wSocket].translateDictionary['connForPeer']
-                overlayNetworkAddressForPeer = connsAddrs[wSocket].translateDictionary['overlayNetworkAddressForPeer']
-                nodePerformanceForPeer = connsAddrs[wSocket].translateDictionary['nodePerformanceForPeer']
+                    node_performance = connsAddrs[wSocket].translateDictionary['node_performance']
 
-                log(connsAddrs[wSocket].translateDictionary['node_performance'])  #1.0017
-                log(connsAddrs[wSocket].translateDictionary['nodePerformanceForPeer'])   #1.001805
+                    publicaddressForPeer = connsAddrs[wSocket].translateDictionary['publicaddressForPeer']
+                    privateaddressForPeer = connsAddrs[wSocket].translateDictionary['privateaddressForPeer']
+                    connForPeer = connsAddrs[wSocket].translateDictionary['connForPeer']
+                    overlayNetworkAddressForPeer = connsAddrs[wSocket].translateDictionary['overlayNetworkAddressForPeer']
+                    nodePerformanceForPeer = connsAddrs[wSocket].translateDictionary['nodePerformanceForPeer']
+                    log(connsAddrs[wSocket].translateDictionary['node_performance'])  #1.0017
+                    log(connsAddrs[wSocket].translateDictionary['nodePerformanceForPeer'])   #1.001805
+                except Exception as exc:
+                    logEssential(f"Occured Exception about {exc}")
+                    publicaddress = None
+                    privateaddress = None
+                    claimNodeSocket = wSocket
+                    claimNodeAddress = addr
+
+                    # overlayNetworkAddress = None
+                    overlayNetworkAddress = connsAddrs[wSocket].translateDictionary['overlayNetworkAddress']
+                    token = connsAddrs[wSocket].translateDictionary['token']
+
+                    node_performance = None
+                    publicaddressForPeer = None
+                    privateaddressForPeer = None
+                    connForPeer = None
+                    overlayNetworkAddressForPeer = None
+                    nodePerformanceForPeer = None
+
                 # metricTime = connsAddrs[wSocket].translateDictionary['metricTime']
                 # metricTimeForPeer = connsAddrs[wSocket].translateDictionary['metricTimeForPeer']
                 # timeDiff = metricTime - metricTimeForPeer
@@ -139,31 +195,134 @@ def selectsocket(conns, connsAddrs):
 
                 sync_event = threading.Event()
                 def event_claim_node():
-                    publicip, publicport = publicaddress
-                    privateip, privateport = privateaddress
-                    log(publicip, publicport, privateip, privateport, overlayNetworkAddress)
-                    sendBuff = "translateAck {0} {1} {2} {3} {4} {5}".format(publicip, publicport, privateip, privateport, node_performance, overlayNetworkAddress)
+                    # publicip, publicport = publicaddress
+                    if publicaddress != None:
+                        publicip, publicport = publicaddress
+                    else:
+                        publicip, publicport = ("", 0)
+
+                    # privateip, privateport = privateaddress
+                    if privateaddress != None:
+                        privateip, privateport = privateaddress
+                    else:
+                        privateip, privateport = ("", 0)
+
+                    logEssential(publicip, publicport, privateip, privateport, overlayNetworkAddress)
+                    # sendBuff = "translateAck {0} {1} {2} {3} {4} {5}".format(publicip, publicport, privateip, privateport, node_performance, overlayNetworkAddress)
+                    logEssential('publicaddress', publicaddress)
+                    if publicaddress != None:
+                        logEssential('translateAck')
+                        sendBuff = "translateAck {0} {1} {2} {3} {4} {5}".format(publicip, publicport, privateip, privateport, node_performance, overlayNetworkAddress)
+                    else:
+                        logEssential('translateNak')
+                        # sendBuff = "translateNak {0}".format(overlayNetworkAddress)
+                        sendBuff = "translateNak {0} {1}".format(overlayNetworkAddress, token)
                     log('^_^', sendBuff, 'to', claimNodeAddress)
                     sync_event.wait()
                     log(awaitTime)
                     time.sleep(awaitTime) #seconds
                     # wSocket.sendto(sendBuff.encode(), addr)
+                    # claimNodeSocket.sendto(sendBuff.encode() + b'\n', claimNodeAddress)
                     claimNodeSocket.sendto(sendBuff.encode(), claimNodeAddress)
 
                 def event_peer_node():
-                    log("Sent peer address pair to Peer Node.")
-                    publicip, publicport = publicaddressForPeer
-                    privateip, privateport = privateaddressForPeer
-                    log(publicip, publicport, privateip, privateport, overlayNetworkAddressForPeer)
-                    sendBuffForPeer = "translateAck {0} {1} {2} {3} {4} {5}".format(publicip, publicport, privateip, privateport, nodePerformanceForPeer, overlayNetworkAddressForPeer)
-                    log('^_^', sendBuffForPeer, 'to', publicaddress)
-                    connForPeer.sendto(sendBuffForPeer.encode(), publicaddress)
+                    if publicaddress != None:
+                        log("Sent peer address pair to Peer Node.")
+                        publicip, publicport = publicaddressForPeer
+
+                        # privateip, privateport = privateaddressForPeer
+                        if privateaddressForPeer != None:
+                            privateip, privateport = privateaddressForPeer
+                        else:
+                            privateip, privateport = ("", 0)
+
+                        log(publicip, publicport, privateip, privateport, overlayNetworkAddressForPeer)
+                        sendBuffForPeer = "translateAck {0} {1} {2} {3} {4} {5}".format(publicip, publicport, privateip, privateport, nodePerformanceForPeer, overlayNetworkAddressForPeer)
+                        log('^_^', sendBuffForPeer, 'to', publicaddress)
+                        connForPeer.sendto(sendBuffForPeer.encode(), publicaddress)
                     sync_event.set()
 
                 thread_the_node = threading.Thread(target=event_claim_node)
                 thread_peer_node = threading.Thread(target=event_peer_node)
                 thread_peer_node.start()
                 thread_the_node.start()
+                # thread_the_node = threading.Thread(target=event_claim_node)
+                # if publicaddress != None:
+                #     thread_peer_node = threading.Thread(target=event_peer_node)
+                # if publicaddress != None:
+                #     thread_peer_node.start()
+                # thread_the_node.start()
+
+            elif command == 'translateIntentional':
+                log("Sent peer address pair to Claim Node.", connsAddrs[wSocket])
+                try:
+                    publicaddress = connsAddrs[wSocket].translateDictionary['publicaddress']
+                    privateaddress = connsAddrs[wSocket].translateDictionary['privateaddress']
+                    claimNodeSocket = wSocket
+                    claimNodeAddress = addr
+                    overlayNetworkAddress = connsAddrs[wSocket].translateDictionary['overlayNetworkAddress']
+                    node_performance = connsAddrs[wSocket].translateDictionary['node_performance']
+
+                    publicaddressForPeer = connsAddrs[wSocket].translateDictionary['publicaddressForPeer']
+                    privateaddressForPeer = connsAddrs[wSocket].translateDictionary['privateaddressForPeer']
+                    connForPeer = connsAddrs[wSocket].translateDictionary['connForPeer']
+                    overlayNetworkAddressForPeer = connsAddrs[wSocket].translateDictionary['overlayNetworkAddressForPeer']
+                    nodePerformanceForPeer = connsAddrs[wSocket].translateDictionary['nodePerformanceForPeer']
+                    log(connsAddrs[wSocket].translateDictionary['node_performance'])  #1.0017
+                    log(connsAddrs[wSocket].translateDictionary['nodePerformanceForPeer'])   #1.001805
+                    token = connsAddrs[wSocket].translateDictionary['token']
+
+                except Exception as exc:
+                    logEssential(f"Occured Exception about {exc}")
+                    publicaddress = None
+                    privateaddress = None
+                    claimNodeSocket = wSocket
+                    claimNodeAddress = addr
+
+                    # overlayNetworkAddress = None
+                    overlayNetworkAddress = connsAddrs[wSocket].translateDictionary['overlayNetworkAddress']
+
+                    node_performance = None
+                    publicaddressForPeer = None
+                    privateaddressForPeer = None
+                    connForPeer = None
+                    overlayNetworkAddressForPeer = None
+                    nodePerformanceForPeer = None
+                    token = None
+
+                awaitTime = 0.0
+                sync_event = threading.Event()
+                def event_claim_node():
+                    # publicip, publicport = publicaddress
+                    if publicaddress != None:
+                        publicip, publicport = publicaddress
+                    else:
+                        publicip, publicport = ("", 0)
+
+                    # privateip, privateport = privateaddress
+                    if privateaddress != None:
+                        privateip, privateport = privateaddress
+                    else:
+                        privateip, privateport = ("", 0)
+
+                    log(publicip, publicport, privateip, privateport, overlayNetworkAddress, token)
+                    if publicaddress != None:
+                        # sendBuff = "translateIntentionalAck {0} {1} {2} {3} {4} {5}".format(publicip, publicport, privateip, privateport, node_performance, overlayNetworkAddress)
+                        sendBuff = "translateIntentionalAck_ {0} {1} {2} {3} {4} {5} {6}".format(publicip, publicport, privateip, privateport, node_performance, overlayNetworkAddress, token)
+
+                        log('^_^', sendBuff, 'to', claimNodeAddress)
+                        sync_event.wait()
+                        log(awaitTime)
+                        time.sleep(awaitTime) #seconds
+                    else:
+                        # sendBuff = "translateIntentionalNak {0}".format(overlayNetworkAddress)
+                        sendBuff = "translateIntentionalNak_ {0} {1}".format(overlayNetworkAddress, token)
+                    # wSocket.sendto(sendBuff.encode(), addr)
+                    claimNodeSocket.sendto(sendBuff.encode(), claimNodeAddress)
+
+                thread_the_node = threading.Thread(target=event_claim_node)
+                thread_the_node.start()
+            
             else:
                 log("else command None")
             connsAddrs[wSocket] = connsAddrs[wSocket]._replace(command=None)
@@ -185,10 +344,10 @@ def receivedDataProcess(connsAddrs):
         data = connsAddrs[key].data
         addr = connsAddrs[key].addr
         conn = key
-        log(data)
+        if data != b'':
+            logEssential(data)
         log(addr)
         log(conn)
-
         if data.startswith(b"registerMe "):
             log("received registerMe")
             log("connection from {}".format(addr))
@@ -200,9 +359,11 @@ def receivedDataProcess(connsAddrs):
             #  '192.168.0.34 1402 12345.432 128 8d3a6c0be806ba24b319f088a45504ea7d601970e0f820ca6965eeca1af2d8747d5bdf0ab68a30612004d54b88fe32a654fb7b300568acf8f3e8c6be439c20b9\x00'
             # log("---")
             log(data.decode().strip())
-            command, privateip, privateport, node_performance, poollength, pool = data.decode().strip().split()
+            # command, privateip, privateport, node_performance, poollength, pool = data.decode().strip().split()
+            command, privateip, privateport, node_performance, poollength, pool = data.decode().strip().rstrip('\x00').split()
+
             privateaddress = (privateip, privateport)
-            connsAddrs[key] = connsAddrs[key]._replace(command=command, privateip=privateip, privateport=privateport, node_performance=node_performance, poollength=poollength, pool=pool, privateaddress=privateaddress)
+            connsAddrs[key] = connsAddrs[key]._replace(command=command, privateip=privateip, privateport=privateport, node_performance=node_performance, poollength=poollength, pool=pool.rstrip('\x00'), privateaddress=privateaddress)
             log(connsAddrs[key].command)
             log(connsAddrs[key].privateaddress)
             log(connsAddrs[key].node_performance)
@@ -230,21 +391,99 @@ def receivedDataProcess(connsAddrs):
             log("connection from {}".format(addr))
             log(data)
             log(data.decode().strip())
-            command, poollength, pool = data.decode().strip().split()
+            # command, poollength, pool = data.decode().strip().split()
+            command, poollength, pool, token = data.decode().strip().rstrip('\x00').split()
+            logEssential(command)
+            logEssential(poollength)
+            logEssential(pool)
+            logEssential(token)
+            logEssential(poolqueue)
+            try:
+                translateDictionary = {}
+                #to claimed node
+                logEssential(poolqueue[pool])
+                translateDictionary['publicaddress'] = poolqueue[pool].addr
+
+                # translateDictionary['privateaddress'] = poolqueue[pool].privateaddress
+                outerip, outerport = poolqueue[pool].addr
+                innerip, innerport = poolqueue[pool].privateaddress
+                log(outerip, innerip)
+                if outerip == innerip:
+                    log("node is in outer network.")
+                    translateDictionary['privateaddress'] = None
+                else:
+                    log("node is in inner NAT network.")
+                    translateDictionary['privateaddress'] = poolqueue[pool].privateaddress
+                    
+                poolForPeer, overlayNetworkAddressForPeer = poolqueueForPeer(addr)
+                log(poolForPeer, overlayNetworkAddressForPeer)
+                translateDictionary['overlayNetworkAddress'] = pool.rstrip('\x00')
+                translateDictionary['metricTime'] = poolqueue[pool].metricTime
+                translateDictionary['node_performance'] = poolqueue[pool].node_performance
+                #to peer node
+                translateDictionary['publicaddressForPeer'] = poolForPeer.addr
+                translateDictionary['privateaddressForPeer'] = poolForPeer.privateaddress
+                translateDictionary['connForPeer'] = poolqueue[pool].conn
+                translateDictionary['overlayNetworkAddressForPeer'] = overlayNetworkAddressForPeer
+                translateDictionary['metricTimeForPeer'] = poolForPeer.metricTime
+                translateDictionary['nodePerformanceForPeer'] = poolForPeer.node_performance
+                translateDictionary['token'] = token
+
+                log(translateDictionary)
+                connsAddrs[key] = connsAddrs[key]._replace(command=command, translateDictionary=translateDictionary)
+                log(connsAddrs)
+            except KeyError:
+                logEssential("no record for {} Cause reply translateNak.".format(pool))
+                translateDictionary = {}
+                translateDictionary['publicaddress'] = None
+                translateDictionary['privateaddress'] = None
+                translateDictionary['overlayNetworkAddress'] = pool.rstrip('\x00')
+                translateDictionary['metricTime'] = None
+                translateDictionary['node_performance'] = None
+                translateDictionary['publicaddressForPeer'] = None
+                translateDictionary['privateaddressForPeer'] = None
+                translateDictionary['connForPeer'] = None
+                translateDictionary['overlayNetworkAddressForPeer'] = None
+                translateDictionary['metricTimeForPeer'] = None
+                translateDictionary['nodePerformanceForPeer'] = None
+                translateDictionary['token'] = token
+                log(translateDictionary)
+                connsAddrs[key] = connsAddrs[key]._replace(command=command, translateDictionary=translateDictionary)
+        elif data.startswith(b"translateIntentional "):
+            log("received translateIntentional")
+            log("connection from {}".format(addr))
+            log(data)
+            log(data.decode().strip())
+            # command, poollength, pool = data.decode().strip().split()
+            # split data at terminator{\n\x00}
+            command, pool, token = data.decode().split('\n\x00')[0].strip().split()
             log(command)
-            log(poollength)
             log(pool)
+            log(token)
             log(poolqueue)
             try:
                 translateDictionary = {}
                 #to claimed node
                 translateDictionary['publicaddress'] = poolqueue[pool].addr
-                translateDictionary['privateaddress'] = poolqueue[pool].privateaddress
+
+                # translateDictionary['privateaddress'] = poolqueue[pool].privateaddress
+                outerip, outerport = poolqueue[pool].addr
+                innerip, innerport = poolqueue[pool].privateaddress
+                log(outerip, innerip)
+                if outerip == innerip:
+                    log("node is in outer network.")
+                    translateDictionary['privateaddress'] = None
+                else:
+                    log("node is in inner NAT network.")
+                    translateDictionary['privateaddress'] = poolqueue[pool].privateaddress
+                    
                 poolForPeer, overlayNetworkAddressForPeer = poolqueueForPeer(addr)
                 log(poolForPeer, overlayNetworkAddressForPeer)
                 translateDictionary['overlayNetworkAddress'] = pool
                 translateDictionary['metricTime'] = poolqueue[pool].metricTime
                 translateDictionary['node_performance'] = poolqueue[pool].node_performance
+                translateDictionary['token'] = token
+
                 #to peer node
                 translateDictionary['publicaddressForPeer'] = poolForPeer.addr
                 translateDictionary['privateaddressForPeer'] = poolForPeer.privateaddress
@@ -257,7 +496,22 @@ def receivedDataProcess(connsAddrs):
                 connsAddrs[key] = connsAddrs[key]._replace(command=command, translateDictionary=translateDictionary)
                 log(connsAddrs)
             except KeyError:
-                log("connection from {}".format(addr))
+                logEssential("no record for {}".format(pool))
+                translateDictionary = {}
+                translateDictionary['publicaddress'] = None
+                translateDictionary['privateaddress'] = None
+                translateDictionary['overlayNetworkAddress'] = pool
+                translateDictionary['metricTime'] = None
+                translateDictionary['node_performance'] = None
+                translateDictionary['token'] = token
+                translateDictionary['publicaddressForPeer'] = None
+                translateDictionary['privateaddressForPeer'] = None
+                translateDictionary['connForPeer'] = None
+                translateDictionary['overlayNetworkAddressForPeer'] = None
+                translateDictionary['metricTimeForPeer'] = None
+                translateDictionary['nodePerformanceForPeer'] = None
+                log(translateDictionary)
+                connsAddrs[key] = connsAddrs[key]._replace(command=command, translateDictionary=translateDictionary)
         else:
             log("received illigal command", data)
             command = None
