@@ -1,6 +1,12 @@
 # BlockChain Library Suite
 [日本語](READMEjp.md)
 
+## All We Did up to 20250701
+- Procedure as for Occurred Irregular (in overlayNetwork library)  
+Handle for Occurred translateNan on Node Leaves Offline. (Can't translate OverlayNetworkAddress to IP Address) in Signaling Phase. (as Init Finger Table)  
+Let Successor Nodes Multiple Candidates in Chord Finger Table.  
+Added EnQueue Method for Exceptiion Interruption. (Command Queue and Communication Queue)  
+
 ## All We Did up to 20250318
 All Done applied on Linux Platform except Calculate Nonce as same Code as iOS/iPadOS. Should be install Swift Compiler to Linux [download](https://www.swift.org/install/linux/#platforms)https://www.swift.org/install/linux/#platforms.  
 
@@ -74,9 +80,19 @@ https://github.com/webbananaunite/Signaling
 $ plutil -extract CFBundleIdentifier raw /Library/Developer/Toolchains/swift-6.0.3-RELEASE.xctoolchain/Info.plist 
 org.swift.603202412101a
 ```
-3) Install Static Linux SDK for Swift cf. [https://www.swift.org/documentation/articles/static-linux-getting-started.html](https://www.swift.org/documentation/articles/static-linux-getting-started.html)  
+3) Install Static Linux SDK for Swift cf.   [https://www.swift.org/documentation/articles/static-linux-getting-started.html](https://www.swift.org/documentation/articles/static-linux-getting-started.html)  
 ```
-$ TOOLCHAINS=org.swift.603202412101a swift sdk install ~/Downloads/swift-6.0.3-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz
+$ TOOLCHAINS=org.swift.603202412101a swift sdk install ~/Downloads/swift-6.0.3-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz  
+```
+3-2) Change includePath in Package.swift if Download Libraries Source Code to Local.  
+```
+let includePath = "{Your Absolute Path}/Library/org.swift.swiftpm/swift-sdks/swift-6.1.2-RELEASE_static-linux-0.0.1.artifactbundle/swift-6.1.2-RELEASE_static-linux-0.0.1/swift-linux-musl/musl-1.2.5.sdk/x86_64/usr/include"
+```
+3-3) Switch Dependency Setting in Package.swift (Testy App and blocks library) if Download Libraries Source Code to Local.  
+```
+dependenciesSettings  
+    .package(name: "overlayNetwork", path: "../overlayNetwork"),  //using local source code.  
+    .package(name: "blocks", path: "../blocks"),  //using source code in same device.
 ```
 4) Closs-Compile for Linux App  
 ```
@@ -85,8 +101,7 @@ $ TOOLCHAINS=org.swift.603202412101a swift build -v --swift-sdk x86_64-swift-lin
 ```
 5) Copy binary to Target Linux.  
 ```
-ex.
-$ scp -i {your key file} ~/appOutput/Testy/x86_64-swift-linux-musl/debug/TestyOnLinux {target user}@{target host name}:{target path}
+$ rsync -ahvz -C --perms --chmod=F0755,D2770 -e 'ssh -i {your key file} ' ~/appOutput/Testy/x86_64-swift-linux-musl/debug/TestyOnLinux {target user}@{target host name}:{target path}  
 ```
 6) Set Target Run Environment on by Linux Distribution  
 [download](https://www.swift.org/install/linux/#platforms)https://www.swift.org/install/linux/#platforms  
@@ -126,7 +141,7 @@ https://github.com/webbananaunite/blocks
 ```
 target 'target name in your App proj' do
   use_frameworks!
-    pod 'blocks-blockchain'
+	pod 'blocks-blockchain'
 end
 ```
 - $ pod install
@@ -203,7 +218,6 @@ Have Implemented All Features but following Advanced Features.
 - Complessed Block, Light Node
 - Complessed Command Operand
 - Be Hi-Speed Detect Duplicate Birth Transaction, BasicIncome Transaction
-- Procedure as for Occurred Irregular
 - Write Documents for Developer
 - Beta Test
 - Multi Signaling Servers Orchestration Work 
