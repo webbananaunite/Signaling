@@ -1,5 +1,11 @@
 # BlockChain Library Suite
 
+## 20250701までに完成した事
+- イレギュラー発生時の手続き(in overlayNetwork library)
+Node離脱時に発生するtranslateNan(overlayNetworkAddressのIP変換不可)への対応(as Init Finger Table)
+Chord Finger Table中のSuccessor Nodeを複数候補記憶するように変更しました。  
+例外割り込みのためのEnQueueメソッドを追加しました。(コマンドキュー、通信キュー)  
+
 ## 20250318までに完成した事
 Linuxプラットフォームへの対応が完了しました。ただし、ノンス計算には対応していません。  
 ソースコードはLinuxとiOSで共通です。(Swift Code)  
@@ -82,19 +88,28 @@ https://github.com/webbananaunite/Signaling
 $ plutil -extract CFBundleIdentifier raw /Library/Developer/Toolchains/swift-6.0.3-RELEASE.xctoolchain/Info.plist 
 org.swift.603202412101a
 ```
-3) Static Linux SDK for Swiftをインストール cf. [https://www.swift.org/documentation/articles/static-linux-getting-started.html](https://www.swift.org/documentation/articles/static-linux-getting-started.html)  
+3) Static Linux SDK for Swiftをインストール cf.   [https://www.swift.org/documentation/articles/static-linux-getting-started.html](https://www.swift.org/documentation/articles/static-linux-getting-started.html)  
 ```
-$ TOOLCHAINS=org.swift.603202412101a swift sdk install ~/Downloads/swift-6.0.3-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz
+$ swift sdk install /Users/yoichi/Downloads/swift-6.1.2-RELEASE_static-linux-0.0.1.artifactbundle.tar --checksum df0b40b9b582598e7e3d70c82ab503fd6fbfdff71fd17e7f1ab37115a0665b3b
+```
+3-2) Change includePath in Package.swift if Download Libraries Source Code.  
+```
+let includePath = "{Your Absolute Path}/Library/org.swift.swiftpm/swift-sdks/swift-6.1.2-RELEASE_static-linux-0.0.1.artifactbundle/swift-6.1.2-RELEASE_static-linux-0.0.1/swift-linux-musl/musl-1.2.5.sdk/x86_64/usr/include"
+```
+3-3) Switch Dependency Setting in Package.swift (Testy App and blocks library) if Download Libraries Source Code to Local.  
+```
+dependenciesSettings  
+    .package(name: "overlayNetwork", path: "../overlayNetwork"),  //using local source code.  
+    .package(name: "blocks", path: "../blocks"),  //using source code in same device.
 ```
 4) Linuxアプリとしてクロスコンパイル  
 ```
 $ cd ~/Documents/block\ chain/Testy
-$ TOOLCHAINS=org.swift.603202412101a swift build -v --swift-sdk x86_64-swift-linux-musl --build-path ~/appOutput/Testy
+$ TOOLCHAINS=org.swift.612202505261a swift build -v --swift-sdk x86_64-swift-linux-musl --build-path ~/appOutput/Testy  
 ```
 5) 実行ファイルをLinuxにコピー  
 ```
-ex.
-$ scp -i {your key file} ~/appOutput/Testy/x86_64-swift-linux-musl/debug/TestyOnLinux {target user}@{target host name}:{target path}
+$ rsync -ahvz -C --perms --chmod=F0755,D2770 -e 'ssh -i {your key file} ' ~/appOutput/Testy/x86_64-swift-linux-musl/debug/TestyOnLinux {target user}@{target host name}:{target path}  
 ```
 6) Linux Distributionごとにターゲット環境を構築  
 [download](https://www.swift.org/install/linux/#platforms)https://www.swift.org/install/linux/#platforms  
@@ -134,7 +149,7 @@ https://github.com/webbananaunite/blocks
 ```
 target 'target name in your App proj' do
   use_frameworks!
-    pod 'blocks-blockchain'
+	pod 'blocks-blockchain'
 end
 ```
 - $ pod install
@@ -213,7 +228,6 @@ Advanced Featuresを除く、すべての機能が実装されました。
 - Blockの圧縮、Light Node
 - Commandオペランドの圧縮
 - Birth Transaction, BasicIncome Transactionの重複チェックの高速化
-- イレギュラー発生時の手続き
 - ライブラリ利用ドキュメントの整備
 - Beta Test
 - 複数の Signaling Server の協調動作
