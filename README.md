@@ -1,9 +1,14 @@
 # BlockChain Library Suite
 [日本語](READMEjp.md)
 
+## 20250806 updated
+Have Fixed up Issue around Occurred translate unavailable in Signaling.
+Translate Table Added in Node for handle translate unavailable issue.
+Socket Communication have Big Updated at all in overlayNetwork.
+
 ## All We Did up to 20250701
 - Procedure as for Occurred Irregular (in overlayNetwork library)  
-Handle for Occurred translateNan on Node Leaves Offline. (Can't translate OverlayNetworkAddress to IP Address) in Signaling Phase. (as Init Finger Table)  
+Handle for Occurred translateNak on Node Leaves Offline. (Can't translate OverlayNetworkAddress to IP Address) in Signaling Phase. (as Init Finger Table)  
 Let Successor Nodes Multiple Candidates in Chord Finger Table.  
 Added EnQueue Method for Exceptiion Interruption. (Command Queue and Communication Queue)  
 
