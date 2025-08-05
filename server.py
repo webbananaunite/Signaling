@@ -134,7 +134,7 @@ def selectsocket(conns, connsAddrs):
                 log(connsAddrs)
                 ip, port = addr
                 sendBuff = "okyours {0}:{1}".format(ip, port)
-                log('^_^', sendBuff)
+                logEssential('^_^', sendBuff)
 
                 #save send okyours time
                 receivedTime = time.time()
@@ -147,7 +147,7 @@ def selectsocket(conns, connsAddrs):
             elif command == 'okregisterMe':
                 log("sent registerMeAck")
                 sendBuff = "registerMeAck"
-                log(sendBuff)
+                logEssential(sendBuff)
                 wSocket.sendto(sendBuff.encode(), addr)
             elif command == 'translate':
                 log("Sent peer address pair to Claim Node.", connsAddrs[wSocket])
@@ -207,17 +207,17 @@ def selectsocket(conns, connsAddrs):
                     else:
                         privateip, privateport = ("", 0)
 
-                    logEssential(publicip, publicport, privateip, privateport, overlayNetworkAddress)
+                    log(publicip, publicport, privateip, privateport, overlayNetworkAddress)
                     # sendBuff = "translateAck {0} {1} {2} {3} {4} {5}".format(publicip, publicport, privateip, privateport, node_performance, overlayNetworkAddress)
-                    logEssential('publicaddress', publicaddress)
+                    log('publicaddress', publicaddress)
                     if publicaddress != None:
-                        logEssential('translateAck')
+                        log('translateAck')
                         sendBuff = "translateAck {0} {1} {2} {3} {4} {5}".format(publicip, publicport, privateip, privateport, node_performance, overlayNetworkAddress)
                     else:
-                        logEssential('translateNak')
+                        log('translateNak')
                         # sendBuff = "translateNak {0}".format(overlayNetworkAddress)
                         sendBuff = "translateNak {0} {1}".format(overlayNetworkAddress, token)
-                    log('^_^', sendBuff, 'to', claimNodeAddress)
+                    logEssential('^_^', sendBuff, 'to', claimNodeAddress)
                     sync_event.wait()
                     log(awaitTime)
                     time.sleep(awaitTime) #seconds
@@ -238,7 +238,7 @@ def selectsocket(conns, connsAddrs):
 
                         log(publicip, publicport, privateip, privateport, overlayNetworkAddressForPeer)
                         sendBuffForPeer = "translateAck {0} {1} {2} {3} {4} {5}".format(publicip, publicport, privateip, privateport, nodePerformanceForPeer, overlayNetworkAddressForPeer)
-                        log('^_^', sendBuffForPeer, 'to', publicaddress)
+                        logEssential('^_^', sendBuffForPeer, 'to', publicaddress)
                         connForPeer.sendto(sendBuffForPeer.encode(), publicaddress)
                     sync_event.set()
 
@@ -309,8 +309,6 @@ def selectsocket(conns, connsAddrs):
                     if publicaddress != None:
                         # sendBuff = "translateIntentionalAck {0} {1} {2} {3} {4} {5}".format(publicip, publicport, privateip, privateport, node_performance, overlayNetworkAddress)
                         sendBuff = "translateIntentionalAck_ {0} {1} {2} {3} {4} {5} {6}".format(publicip, publicport, privateip, privateport, node_performance, overlayNetworkAddress, token)
-
-                        log('^_^', sendBuff, 'to', claimNodeAddress)
                         sync_event.wait()
                         log(awaitTime)
                         time.sleep(awaitTime) #seconds
@@ -318,6 +316,7 @@ def selectsocket(conns, connsAddrs):
                         # sendBuff = "translateIntentionalNak {0}".format(overlayNetworkAddress)
                         sendBuff = "translateIntentionalNak_ {0} {1}".format(overlayNetworkAddress, token)
                     # wSocket.sendto(sendBuff.encode(), addr)
+                    logEssential('^_^', sendBuff, 'to', claimNodeAddress)
                     claimNodeSocket.sendto(sendBuff.encode(), claimNodeAddress)
 
                 thread_the_node = threading.Thread(target=event_claim_node)
@@ -393,15 +392,15 @@ def receivedDataProcess(connsAddrs):
             log(data.decode().strip())
             # command, poollength, pool = data.decode().strip().split()
             command, poollength, pool, token = data.decode().strip().rstrip('\x00').split()
-            logEssential(command)
-            logEssential(poollength)
-            logEssential(pool)
-            logEssential(token)
-            logEssential(poolqueue)
+            log(command)
+            log(poollength)
+            log(pool)
+            log(token)
+            log(poolqueue)
             try:
                 translateDictionary = {}
                 #to claimed node
-                logEssential(poolqueue[pool])
+                log(poolqueue[pool])
                 translateDictionary['publicaddress'] = poolqueue[pool].addr
 
                 # translateDictionary['privateaddress'] = poolqueue[pool].privateaddress
@@ -456,10 +455,12 @@ def receivedDataProcess(connsAddrs):
             log(data.decode().strip())
             # command, poollength, pool = data.decode().strip().split()
             # split data at terminator{\n\x00}
-            command, pool, token = data.decode().split('\n\x00')[0].strip().split()
+            # command, pool, token = data.decode().split('\n\x00')[0].strip().split()
+            command, operands, token = data.decode().split('\n\x00')[0].strip().split()
+            pool, originalToken = operands.strip().split(',')
             log(command)
             log(pool)
-            log(token)
+            # log(originalToken)
             log(poolqueue)
             try:
                 translateDictionary = {}
@@ -483,6 +484,7 @@ def receivedDataProcess(connsAddrs):
                 translateDictionary['metricTime'] = poolqueue[pool].metricTime
                 translateDictionary['node_performance'] = poolqueue[pool].node_performance
                 translateDictionary['token'] = token
+                # translateDictionary['token'] = originalToken
 
                 #to peer node
                 translateDictionary['publicaddressForPeer'] = poolForPeer.addr
@@ -503,6 +505,7 @@ def receivedDataProcess(connsAddrs):
                 translateDictionary['overlayNetworkAddress'] = pool
                 translateDictionary['metricTime'] = None
                 translateDictionary['node_performance'] = None
+                # translateDictionary['token'] = originalToken
                 translateDictionary['token'] = token
                 translateDictionary['publicaddressForPeer'] = None
                 translateDictionary['privateaddressForPeer'] = None
