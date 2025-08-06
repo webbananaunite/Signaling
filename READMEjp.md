@@ -1,13 +1,16 @@
 # BlockChain Library Suite
 
+## all we did up 20250806 1900JST
+見直したソケット通信におけるNATトラバーサルでハンドシェイク機能を修正しました。  
+
 ## 20250806 updated
-translateできない場合の問題を修正しました。
-overlayNetworkアドレス翻訳テーブルを追加しました。translateNakへの対応のため。
-ソケット通信が大幅に見直されました。(overlayNetwork library)
+translateできない場合の問題を修正しました。  
+overlayNetworkアドレス翻訳テーブルを追加しました。translateNakへの対応のため。  
+ソケット通信が大幅に見直されました。(overlayNetwork library)  
 
 ## 20250701までに完成した事
-- イレギュラー発生時の手続き(in overlayNetwork library)
-Node離脱時に発生するtranslateNak(overlayNetworkAddressのIP変換不可)への対応(as Init Finger Table)
+- イレギュラー発生時の手続き(in overlayNetwork library)  
+Node離脱時に発生するtranslateNak(overlayNetworkAddressのIP変換不可)への対応(as Init Finger Table)  
 Chord Finger Table中のSuccessor Nodeを複数候補記憶するように変更しました。  
 例外割り込みのためのEnQueueメソッドを追加しました。(コマンドキュー、通信キュー)  
 
@@ -154,7 +157,7 @@ https://github.com/webbananaunite/blocks
 ```
 target 'target name in your App proj' do
   use_frameworks!
-	pod 'blocks-blockchain'
+    pod 'blocks-blockchain'
 end
 ```
 - $ pod install
