@@ -1,5 +1,9 @@
 # BlockChain Library Suite
 
+## Applied UnConnect Exception and Heart Beat 20250909JST
+Connectできない場合の例外に対応しました。  
+Heart Beatに対応しました。  
+
 ## all we did up 20250806 1900JST
 見直したソケット通信におけるNATトラバーサルでハンドシェイク機能を修正しました。  
 
@@ -157,7 +161,7 @@ https://github.com/webbananaunite/blocks
 ```
 target 'target name in your App proj' do
   use_frameworks!
-    pod 'blocks-blockchain'
+	pod 'blocks-blockchain'
 end
 ```
 - $ pod install
