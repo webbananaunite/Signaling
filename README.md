@@ -1,6 +1,10 @@
 # BlockChain Library Suite
 [日本語](READMEjp.md)
 
+## Applied UnConnect Exception and Heart Beat 20250909JST
+Added as for Exception As Can NOT Connect to Nodes.  
+Added Checking Node Heart Beat.  
+
 ## all we did up 20250806 1900JST
 Have Fixed Up Handshake with Peer in NAT Traversal on Updated Socket Communication.  
 
