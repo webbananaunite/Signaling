@@ -1,6 +1,9 @@
 # BlockChain Library Suite
 [日本語](READMEjp.md)
 
+## Support my work  
+Click [Sponsor button](https://github.com/sponsors/webbananaunite) to support my open-source project on GitHub.
+
 ## Applied UnConnect Exception and Heart Beat 20250909JST
 Added as for Exception As Can NOT Connect to Nodes.  
 Added Checking Node Heart Beat.  
