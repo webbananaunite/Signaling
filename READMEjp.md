@@ -3,6 +3,16 @@
 ## Support my work
 [Sponserボタン](https://github.com/sponsors/webbananaunite) をクリックして、GitHubで私のオープンソースプロジェクトを応援してください。  
 
+## 20260524JST
+トランザクション署名ペイロードを修正しました。  
+ブロック報酬・新規発行の検証を修正しました。  
+ClaimObject復元を修正しました。  
+チェーン選択方法を累積作業量に修正しました。  
+残高検証方法を修正しました。  
+
+## 20260522JST
+PoWでnonce生成プロセスを修正しました。  
+
 ## Applied UnConnect Exception and Heart Beat 20250909JST
 Connectできない場合の例外に対応しました。  
 Heart Beatに対応しました。  
