@@ -4,6 +4,16 @@
 ## Support my work  
 Click [Sponsor button](https://github.com/sponsors/webbananaunite) to support my open-source project on GitHub.
 
+## 20260524JST
+Transaction signature payload has been corrected.  
+Verification process for block rewards and new issuance has been corrected.  
+Fixed claim object restoration issue.  
+Chain selection method has been modified to use cumulative workload.  
+Balance verification method has been corrected.  
+
+## 20260522JST
+Have fixed nonce generation process in Proof-of-Work.  
+
 ## Applied UnConnect Exception and Heart Beat 20250909JST
 Added as for Exception As Can NOT Connect to Nodes.  
 Added Checking Node Heart Beat.  
