@@ -1,5 +1,8 @@
 # BlockChain Library Suite
 
+## Support my work
+[Sponserボタン](https://github.com/sponsors/webbananaunite) をクリックして、GitHubで私のオープンソースプロジェクトを応援してください。  
+
 ## Applied UnConnect Exception and Heart Beat 20250909JST
 Connectできない場合の例外に対応しました。  
 Heart Beatに対応しました。  
