@@ -4,6 +4,11 @@
 ## Support my work  
 Click [Sponsor button](https://github.com/sponsors/webbananaunite) to support my open-source project on GitHub.
 
+## Node Status
+![Signaling](https://img.shields.io/endpoint?url=https://www.webbanana.org/ishot/shields/signaling)
+![BootNode](https://img.shields.io/endpoint?url=https://www.webbanana.org/ishot/shields/bootnode)
+Detailed status: https://www.webbanana.org/ishot/status
+
 ## 20260524JST
 Transaction signature payload has been corrected.  
 Verification process for block rewards and new issuance has been corrected.  
