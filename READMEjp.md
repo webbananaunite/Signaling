@@ -3,6 +3,11 @@
 ## Support my work
 [Sponserボタン](https://github.com/sponsors/webbananaunite) をクリックして、GitHubで私のオープンソースプロジェクトを応援してください。  
 
+## Node Status
+![Signaling](https://img.shields.io/endpoint?url=https://www.webbanana.org/ishot/shields/signaling)
+![BootNode](https://img.shields.io/endpoint?url=https://www.webbanana.org/ishot/shields/bootnode)
+Detailed status: https://www.webbanana.org/ishot/status
+
 ## 20260524JST
 トランザクション署名ペイロードを修正しました。  
 ブロック報酬・新規発行の検証を修正しました。  
