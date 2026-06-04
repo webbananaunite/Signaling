@@ -8,6 +8,10 @@
 ![BootNode](https://img.shields.io/endpoint?url=https://www.webbanana.org/ishot/shields/bootnode)
 Detailed status: https://www.webbanana.org/ishot/status
 
+## 20260604JST
+connect()関数チェックメカニズムを変更しました。(overlayNetwork)  
+select()関数のハンドシェイク・チェックメカニズムを変更しました。(overlayNetwork)  
+
 ## 20260524JST
 トランザクション署名ペイロードを修正しました。  
 ブロック報酬・新規発行の検証を修正しました。  
