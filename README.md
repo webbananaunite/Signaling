@@ -9,6 +9,10 @@ Click [Sponsor button](https://github.com/sponsors/webbananaunite) to support my
 ![BootNode](https://img.shields.io/endpoint?url=https://www.webbanana.org/ishot/shields/bootnode)
 Detailed status: https://www.webbanana.org/ishot/status
 
+## 20260604JST
+Changed connect() function check mechanism　in overlayNetwork.  
+Changed select() function handshake mechanism　in overlayNetwork.  
+
 ## 20260524JST
 Transaction signature payload has been corrected.  
 Verification process for block rewards and new issuance has been corrected.  
