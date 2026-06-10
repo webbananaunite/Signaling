@@ -8,6 +8,9 @@
 ![BootNode](https://img.shields.io/endpoint?url=https://www.webbanana.org/ishot/shields/bootnode)
 Detailed status: https://www.webbanana.org/ishot/status
 
+## 20260609JST
+Signalingフェーズにおいて、ノードパフォーマンス計算方式を簡素化したことにより、TCP Hole Punchingの成功率が向上しました。   
+
 ## 20260604JST
 connect()関数チェックメカニズムを変更しました。(overlayNetwork)  
 select()関数のハンドシェイク・チェックメカニズムを変更しました。(overlayNetwork)  
