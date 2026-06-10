@@ -9,6 +9,9 @@ Click [Sponsor button](https://github.com/sponsors/webbananaunite) to support my
 ![BootNode](https://img.shields.io/endpoint?url=https://www.webbanana.org/ishot/shields/bootnode)
 Detailed status: https://www.webbanana.org/ishot/status
 
+## 20260609JST
+Let Node Performance Calculator Simplify in Signaling Phase, cause TCP Hole Punching Success Rate Improved.   
+
 ## 20260604JST
 Changed connect() function check mechanism　in overlayNetwork.  
 Changed select() function handshake mechanism　in overlayNetwork.  
